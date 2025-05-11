@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void; // Click handler
   disabled?: boolean; // Disabled state
   className?: string; // Disabled state
+  loading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -20,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className = "",
   disabled = false,
+  loading = false,
 }) => {
   // Size Classes
   const sizeClasses = {
@@ -46,7 +48,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}
-      {children}
+      {loading ? "loading..." : children}
       {endIcon && <span className="flex items-center">{endIcon}</span>}
     </button>
   );

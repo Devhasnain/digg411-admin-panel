@@ -6,15 +6,23 @@ import "flatpickr/dist/flatpickr.css";
 import App from "./App.tsx";
 import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+
+import { Provider } from "react-redux";
+import { store, persistor } from "./store";
+import { PersistGate } from "redux-persist/integration/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
-      <AppWrapper>
-        <Toaster/>
-        <App />
-      </AppWrapper>
-    </ThemeProvider>
-  </StrictMode>,
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider>
+          <AppWrapper>
+            <Toaster />
+            <App />
+          </AppWrapper>
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
+  </StrictMode>
 );

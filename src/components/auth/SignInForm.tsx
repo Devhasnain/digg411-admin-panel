@@ -1,12 +1,44 @@
-import { useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { Link } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
+import toast from "react-hot-toast";
+import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
+import { useMutation } from "../../hooks/useMutation";
+import { endpoints } from "../../config/api";
+import { useDispatch } from "react-redux";
+import { setToken } from "../../store/slices/authSlice";
 
 export default function SignInForm() {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const { request, loading } = useMutation(endpoints.login);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    setForm((pre) => ({ ...pre, [name]: value }));
+  };
+
+  const handleOnSubmit = useCallback(
+    async (e: any) => {
+      try {
+        e.preventDefault();
+        const data = await request(form);
+        dispatch(setToken(data?.token));
+        toast.success(data?.message);
+      } catch (error) {
+        toast.error(GetApiErrorMessage(error));
+      }
+    },
+    [form, request]
+  );
+
   return (
     <div className="flex flex-col flex-1">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -20,22 +52,37 @@ export default function SignInForm() {
             </p>
           </div>
           <div>
-            <form>
+            <form onSubmit={handleOnSubmit}>
               <div className="space-y-6">
                 <div>
-                  <Label>
+                  <Label htmlFor="email">
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  <Input
+                    value={form.email}
+                    onChange={handleOnChange}
+                    name="email"
+                    id="email"
+                    type="email"
+                    required={true}
+                    placeholder="info@gmail.com"
+                  />
                 </div>
                 <div>
-                  <Label>
+                  <Label htmlFor="password">
                     Password <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      value={form.password}
+                      onChange={handleOnChange}
+                      name="password"
+                      id="password"
+                      required={true}
+                      min={6}
+                      autoComplete="current-password"
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -58,7 +105,14 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
+                  <Button
+                    disabled={
+                      !form.email.trim() || !form.password.trim() || loading
+                    }
+                    className="w-full"
+                    size="sm"
+                    loading={loading}
+                  >
                     Sign in
                   </Button>
                 </div>
