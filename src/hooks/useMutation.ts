@@ -1,17 +1,18 @@
 import { useState } from "react";
 import baseApi from "../config/api";
+import { AxiosHeaders } from "axios";
 
-export const useMutation = (endpoint:string) => {
+export const useMutation = (endpoint: string) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
 
-  const request = async (payload: any, path?:string) => {
+  const request = async (payload: any, path?: string | null, token?: string) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await baseApi.post(path ? path : endpoint, payload);
+      const response = await baseApi.post(path ? path : endpoint, payload, { headers: { Authorization: token } });
       setData(response.data);
       return response.data
     } catch (err: any) {

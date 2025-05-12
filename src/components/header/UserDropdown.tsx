@@ -28,8 +28,8 @@ export default function UserDropdown() {
       >
         <span className="mr-3 overflow-hidden rounded-full flex flex-col items-center justify-center h-11 w-11 border border-gray-200 dark:border-gray-800">
           {
-            user?.profileImage ?
-            <img src={user?.profileImage} className="h-8 w-8" alt="User" />
+            user?.picture ?
+            <img src={user?.picture} className="object-cover" alt="User" />
             :
             <span>{user?.name[0]?.toUpperCase()}</span>
           }

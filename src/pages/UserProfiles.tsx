@@ -1,25 +1,93 @@
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import UserMetaCard from "../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../components/UserProfile/UserInfoCard";
-import UserAddressCard from "../components/UserProfile/UserAddressCard";
 import PageMeta from "../components/common/PageMeta";
-import { useSelector } from "react-redux";
-import { getUser } from "../store/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getToken, getUser, updateUser } from "../store/slices/authSlice";
+import { useModal } from "../hooks/useModal";
+import { useMutation } from "../hooks/useMutation";
+import { endpoints } from "../config/api";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import GetApiErrorMessage from "../utils/GetApiErrorMessage";
 
 export default function UserProfiles() {
   const user = useSelector(getUser);
+
+  const { isOpen, openModal, closeModal } = useModal();
+  const token = useSelector(getToken);
+  const dispatch = useDispatch();
+  const { loading, request } = useMutation(endpoints.updateProfile);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "",
+    phone: "",
+    bio: "",
+  });
+  const [haveChanges, setHaveChanges] = useState(false);
+
+  const handleOnChange = useCallback(
+    (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+      const { name, value } = e.target;
+      setForm((pre) => ({ ...pre, [name]: value }));
+      if (!haveChanges) setHaveChanges(!haveChanges);
+    },
+    [form]
+  );
+
+  const handleSave = useCallback(
+    async (e: any) => {
+      try {
+        e.preventDefault();
+        await request(form, null, token ?? "");
+        dispatch(updateUser(form));
+        setHaveChanges(false);
+        toast.success("Profile updated.");
+        closeModal();
+      } catch (error) {
+        toast.error(GetApiErrorMessage(error));
+      }
+    },
+    [form]
+  );
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user?.name,
+        email: user?.email,
+        phone: user.phone,
+        bio: user?.bio,
+        role: user?.role,
+      });
+    }
+
+    return () => {
+      setHaveChanges(false);
+    };
+  }, [user]);
+
   return (
     <>
-      <PageMeta
-        title={`${user?.name} | Petro411`}
-        description=""
-      />
+      <PageMeta title={`${user?.name} | Petro411`} description="" />
       <PageBreadcrumb pageTitle="Profile" />
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
         <div className="space-y-6">
-          <UserMetaCard user={user} />
+          <UserMetaCard
+            user={user}
+            openModal={openModal}
+            isOpen={isOpen}
+            closeModal={closeModal}
+            onSubmit={handleSave}
+            form={form}
+            onChange={handleOnChange}
+            haveChanges={haveChanges}
+            loading={loading}
+          />
           <UserInfoCard user={user} />
-          <UserAddressCard user={user} />
         </div>
       </div>
     </>

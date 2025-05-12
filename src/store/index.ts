@@ -5,17 +5,19 @@ import { combineReducers } from 'redux';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import exampleReducer from './slices/exampleSlice';
 import authSlice from './slices/authSlice';
+import usersSlice from './slices/usersSlice';
 
 
 const rootReducer = combineReducers({
   example: exampleReducer,
-  auth: authSlice
+  auth: authSlice,
+  users:usersSlice
 });
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist:['auth']
+    whitelist:['auth','users']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

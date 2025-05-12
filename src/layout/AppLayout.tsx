@@ -11,7 +11,8 @@ import {
   setUser,
 } from "../store/slices/authSlice";
 import { useCallback, useEffect } from "react";
-import baseApi, { endpoints } from "../config/api";
+import baseApi, { endpoints, UserTypes } from "../config/api";
+import toast from "react-hot-toast";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -26,6 +27,9 @@ const LayoutContent: React.FC = () => {
       const res = await baseApi.get(endpoints.lookup, {
         headers: { Authorization: token },
       });
+      if(res.data?.user?.role !== UserTypes.admin){
+        throw new Error("You don't have permissions to access admin panel.")
+      }
       dispatch(setUser(res.data?.user));
     } catch (error) {
       navigate("/signin");
@@ -40,6 +44,10 @@ const LayoutContent: React.FC = () => {
       } else {
         navigate("/signin");
       }
+    }else if(user && user.role !== UserTypes.admin){
+      navigate("/signin");
+      dispatch(resetAuth());
+      toast.error("You don't have permissions to access admin panel.")
     }
   }, [user, token]);
 
@@ -55,7 +63,7 @@ const LayoutContent: React.FC = () => {
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 overflow-x-hidden">
           {user && <Outlet />}
         </div>
       </div>

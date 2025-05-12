@@ -3,6 +3,7 @@ import axios from "axios";
 const baseApi = axios.create({
   baseURL: process.env.NODE_ENV === "production" ? import.meta.env.VITE_API_URL : "http://localhost:3000/api",
   timeout: 10000,
+  withCredentials:true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -21,16 +22,15 @@ export const endpoints = {
   login: "/auth/login",
   signup: "/auth/sign-up",
   lookup: "/auth/lookup",
-  google: "/auth/google",
-  checkout: "/stripe/checkout",
-  portal: "/stripe/portal",
-  logout: "/auth/logout",
-  updatePassword: "/auth/update-password",
-  setNewPassword: "/auth/new-password",
-  getOtp: "/auth/get-otp",
-  verifyOtp: "/auth/verify-otp",
-  queryOwners: "/owners/query-owners",
-  ownerDetails: "/owners",
+  updateProfile:"/admin/update-profile",
+  getUsers:"/admin/get-users",
+  getUser:"/admin/get-user",
+}
+
+
+export const UserTypes = {
+  user:"user",
+  admin:"admin"
 }
 
 export default baseApi;

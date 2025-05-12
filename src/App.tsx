@@ -19,6 +19,11 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ForgetPassword from "./pages/AuthPages/ForgetPassword";
 import Customers from "./pages/Users";
+import UserDetails from "./pages/Users/UserDetails";
+import Faqs from "./pages/OtherPage/Faqs";
+import TermsAndConditions from "./pages/OtherPage/TermsAndConditions";
+import PrivacyPolicy from "./pages/OtherPage/PrivacyPolicy";
+import Contact from "./pages/Contact";
 
 export default function App() {
   return (
@@ -33,6 +38,11 @@ export default function App() {
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/users" element={<Customers />} />
+            <Route path="/user/:id" element={<UserDetails />} />
+            <Route path="/faqs" element={<Faqs />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/contact" element={<Contact />} />
 
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />

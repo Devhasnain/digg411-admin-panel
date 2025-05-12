@@ -7,7 +7,7 @@ import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
 import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
 import { useMutation } from "../../hooks/useMutation";
-import { endpoints } from "../../config/api";
+import { endpoints, UserTypes } from "../../config/api";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../store/slices/authSlice";
 
@@ -31,7 +31,6 @@ export default function SignInForm() {
         e.preventDefault();
         const data = await request(form);
         dispatch(setToken(data?.token));
-        toast.success(data?.message);
       } catch (error) {
         toast.error(GetApiErrorMessage(error));
       }

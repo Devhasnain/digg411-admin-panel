@@ -776,3 +776,14 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+.ql-toolbar {
+  @apply !rounded-tl-2xl !rounded-tr-2xl
+}
+.ql-container{
+  @apply !rounded-bl-2xl !rounded-br-2xl
+}
+
+.p-datatable .p-datatable-header{
+  @apply !bg-transparent !border-none
+}
