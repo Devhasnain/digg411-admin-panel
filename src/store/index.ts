@@ -6,12 +6,14 @@ import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist
 import exampleReducer from './slices/exampleSlice';
 import authSlice from './slices/authSlice';
 import usersSlice from './slices/usersSlice';
+import faqSlice from './slices/faqSlice';
 
 
 const rootReducer = combineReducers({
   example: exampleReducer,
   auth: authSlice,
-  users:usersSlice
+  users:usersSlice,
+  faq:faqSlice
 });
 
 const persistConfig = {

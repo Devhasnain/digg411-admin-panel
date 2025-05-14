@@ -1,6 +1,5 @@
 import { useState } from "react";
 import baseApi from "../config/api";
-import { AxiosHeaders } from "axios";
 
 export const useMutation = (endpoint: string) => {
   const [loading, setLoading] = useState<boolean>(false);
