@@ -1,7 +1,7 @@
 import PageMeta from "../../components/common/PageMeta";
 import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers, setUsers } from "../../store/slices/usersSlice";
+import { addUser, getUsers, setUsers } from "../../store/slices/usersSlice";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useQuery } from "../../hooks/useQuery";
 import { endpoints } from "../../config/api";
@@ -12,6 +12,11 @@ import { Plans } from "../../config/subscriptionPlans";
 import { Link } from "react-router";
 import AddUserModel from "../../components/UserProfile/AddUserModel";
 import { useModal } from "../../hooks/useModal";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import IconButton from "../../components/ui/iconButton/IconButton";
+import toast from "react-hot-toast";
+import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
+import { useMutation } from "../../hooks/useMutation";
 
 const Customers = () => {
   const auth = useSelector(getUser);
@@ -53,7 +58,7 @@ const Customers = () => {
                   }
                   className="flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 overflow-hidden rounded-full">
+                  <div className="w-10 h-10 overflow-hidden rounded-full border flex flex-col items-center justify-center">
                     {user?.picture ? (
                       <img
                         width={40}
@@ -96,7 +101,10 @@ type HeaderProps = {
 };
 
 const Header = ({ isLoading, onReload }: HeaderProps) => {
+  const dispatch = useDispatch();
+  const token = useSelector(getToken);
   const { isOpen, openModal, closeModal } = useModal();
+  const {request,loading} = useMutation(endpoints.createUser);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -122,13 +130,21 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
     async (e: any) => {
       try {
         e.preventDefault();
-        // await request(form, null, token ?? "");
-        // dispatch(updateUser(form));
-        // setHaveChanges(false);
-        // toast.success("Profile updated.");
+        const res = await request(form, null, token ?? "");
+        dispatch(addUser(res?.user));
+        setHaveChanges(false);
+        toast.success("New user has been added.");
+        setForm({
+          name:"",
+          email:"",
+          bio:"",
+          phone:"",
+          password:"",
+          role:""
+        })
         closeModal();
       } catch (error) {
-        // toast.error(GetApiErrorMessage(error));
+        toast.error(GetApiErrorMessage(error));
       }
     },
     [form]
@@ -144,23 +160,13 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
         </h2>
         <ol className="flex items-center gap-4">
           <li>
-            <button
-              onClick={onReload}
-              className="relative flex items-center justify-center !text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-            >
-              <i
-                className={`pi pi-sync !text-gray-500 transition-colors bg-white ${
-                  isLoading && "animate-spin"
-                } ease-in-out`}
-              ></i>
-              {/* <PiReload
+            <IconButton onClick={onReload} loading={isLoading}>
+              <ArrowPathIcon
                 height={18}
                 width={18}
-                className={`!text-gray-500 transition-colors bg-white ${
-                  isLoading && "animate-spin"
-                } ease-in-out`}
-              /> */}
-            </button>
+                className={`transition-colors group-hover:text-white`}
+              />
+            </IconButton>
           </li>
           <li>
             <Button onClick={openModal} size="sm">
@@ -176,7 +182,7 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
         form={form}
         onChange={handleOnChange}
         haveChanges={haveChanges}
-        loading={false}
+        loading={loading}
         buttonTitle="Save"
       />
     </>

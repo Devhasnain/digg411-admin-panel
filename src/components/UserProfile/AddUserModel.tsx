@@ -110,6 +110,7 @@ const AddUserModel = ({
                     <Label htmlFor="role">Role</Label>
                     <Select
                       defaultValue={form.role}
+                      name="role"
                       options={[
                         {
                           label: "User",

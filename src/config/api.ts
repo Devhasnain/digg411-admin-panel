@@ -25,10 +25,13 @@ export const endpoints = {
   updateProfile:"/admin/update-profile",
   getUsers:"/admin/get-users",
   getUser:"/admin/get-user",
+  createUser:"/admin/create-user",
   getFaqs:"/admin/faq",
   createFaqs:"/admin/faq/create",
   updateFaqs:"/admin/faq/update",
   deleteFaqs:"/admin/faq/delete",
+  getPage:"/admin/page/get",
+  updatePage:"/admin/page/update",
 }
 
 

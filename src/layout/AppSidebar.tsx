@@ -63,11 +63,11 @@ const navItems: NavItem[] = [
     name: "Pages",
     icon: <PageIcon />,
     subItems: [
-      { name: "Faqs", path: "/faqs", pro: false },
-      { name: "Terms & Conditions", path: "/terms", pro: false },
-      { name: "Privacy Policy", path: "/privacy-policy", pro: false },
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Faqs", path: "/faqs", },
+      { name: "Terms & Conditions", path: "/terms", },
+      { name: "Privacy Policy", path: "/privacy-policy", },
+      { name: "Blank Page", path: "/blank", },
+      { name: "404 Error", path: "/error-404", },
     ],
   },
    {

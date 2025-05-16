@@ -7,19 +7,21 @@ import exampleReducer from './slices/exampleSlice';
 import authSlice from './slices/authSlice';
 import usersSlice from './slices/usersSlice';
 import faqSlice from './slices/faqSlice';
+import pageSlice from './slices/pageSlice';
 
 
 const rootReducer = combineReducers({
   example: exampleReducer,
   auth: authSlice,
-  users:usersSlice,
-  faq:faqSlice
+  users: usersSlice,
+  faq: faqSlice,
+  page: pageSlice
 });
 
 const persistConfig = {
-    key: 'root',
-    storage,
-    whitelist:['auth','users']
+  key: 'root',
+  storage,
+  whitelist: ['auth', 'users']
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
