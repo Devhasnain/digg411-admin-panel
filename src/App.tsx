@@ -24,6 +24,9 @@ import Faqs from "./pages/OtherPage/Faqs";
 import TermsAndConditions from "./pages/OtherPage/TermsAndConditions";
 import PrivacyPolicy from "./pages/OtherPage/PrivacyPolicy";
 import Contact from "./pages/Contact";
+import NewsLetters from "./pages/NewsLetters";
+import MineralList from "./pages/MineralList";
+import AddMineral from "./pages/MineralList/AddMineral";
 
 export default function App() {
   return (
@@ -43,6 +46,9 @@ export default function App() {
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/newsletters" element={<NewsLetters />} />
+            <Route path="/mineral" element={<MineralList />} />
+            <Route path="/add-mineral" element={<AddMineral />} />
 
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />

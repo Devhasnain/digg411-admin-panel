@@ -5,8 +5,12 @@ import Input from "../form/input/InputField";
 import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
 import Select from "../form/Select";
+import Checkbox from "../form/input/Checkbox";
+import { useSelector } from "react-redux";
+import { getUser } from "../../store/slices/authSlice";
 
 type Props = {
+  user: any;
   isOpen: boolean;
   closeModal: () => void;
   onSubmit: (e: any) => void;
@@ -17,16 +21,18 @@ type Props = {
     role?: string;
     phone: string;
     bio: string;
+    permissions?:string[]
   };
   onChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => void;
   haveChanges: boolean;
   loading: boolean;
-  buttonTitle?:string
+  buttonTitle?: string;
 };
 
 const AddUserModel = ({
+  user,
   isOpen,
   closeModal,
   onSubmit,
@@ -34,8 +40,9 @@ const AddUserModel = ({
   onChange,
   haveChanges,
   loading,
-  buttonTitle="Save Changes"
+  buttonTitle = "Save Changes",
 }: Props) => {
+  const auth = useSelector(getUser);
   return (
     <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px]">
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
@@ -50,8 +57,8 @@ const AddUserModel = ({
         <form className="flex flex-col" onSubmit={onSubmit}>
           <div className="custom-scrollbar overflow-y-auto px-2 pb-3">
             <div className="mt-3">
-              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div className="col-span-2 lg:col-span-1">
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-12">
+                <div className="col-span-12 lg:col-span-6">
                   <Label htmlFor="name">Name</Label>
                   <Input
                     type="text"
@@ -65,7 +72,7 @@ const AddUserModel = ({
                   />
                 </div>
 
-                <div className="col-span-2 lg:col-span-1">
+                <div className="col-span-12 lg:col-span-6">
                   <Label htmlFor="email">Email Address</Label>
                   <Input
                     type="email"
@@ -79,7 +86,7 @@ const AddUserModel = ({
                 </div>
 
                 {"password" in form && (
-                  <div className="col-span-2 lg:col-span-1">
+                  <div className="col-span-12 lg:col-span-6">
                     <Label htmlFor="password">Password</Label>
                     <Input
                       type="text"
@@ -93,7 +100,7 @@ const AddUserModel = ({
                   </div>
                 )}
 
-                <div className="col-span-2 lg:col-span-1">
+                <div className="col-span-12 lg:col-span-6">
                   <Label htmlFor="phone">Phone number</Label>
                   <Input
                     type="number"
@@ -106,7 +113,7 @@ const AddUserModel = ({
                 </div>
 
                 {"role" in form && (
-                  <div className="col-span-2 lg:col-span-1">
+                  <div className="col-span-12 lg:col-span-6">
                     <Label htmlFor="role">Role</Label>
                     <Select
                       defaultValue={form.role}
@@ -127,7 +134,29 @@ const AddUserModel = ({
                   </div>
                 )}
 
-                <div className="col-span-2">
+                {"permissions" in form &&  auth?._id !== user?._id ? (
+                  <div className="col-span-12">
+                    <Label htmlFor="permissions">Permissions</Label>
+                    <div className="flex flex-row items-center gap-5">
+                      {["read", "create", "update", "delete"].map(
+                        (item, index) => (
+                          <Checkbox
+                            key={index}
+                            label={item[0].toUpperCase() + item.slice(1,item.length)}
+                            value={item}
+                            name="permissions"
+                            disabled={item === "read"}
+                            checked={"permissions" in form && form?.permissions?.includes(item) ? true : false}
+                            onChange={onChange}
+                          />
+                        )
+                      )}
+
+                    </div>
+                  </div>
+                ): <></>}
+
+                <div className="col-span-12">
                   <Label htmlFor="bio">Bio</Label>
                   <TextArea
                     name="bio"

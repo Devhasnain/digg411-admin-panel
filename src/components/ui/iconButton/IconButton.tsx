@@ -17,7 +17,7 @@ const IconButton = ({ onClick, loading, children }: Props) => {
           width={18}
           className={`transition-colors ${
             loading && "animate-spin"
-          } ease-in-out group-hover:text-white`}
+          } ease-in-out dark:group-hover:text-white`}
         />
       )}
       {!loading && children}

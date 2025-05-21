@@ -1,10 +1,10 @@
 import PageMeta from "../../components/common/PageMeta";
 import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, getUsers, setUsers } from "../../store/slices/usersSlice";
+import { addUser, getUsers, removeUser, setUsers } from "../../store/slices/usersSlice";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useQuery } from "../../hooks/useQuery";
-import { endpoints } from "../../config/api";
+import baseApi, { endpoints } from "../../config/api";
 import { getToken, getUser } from "../../store/slices/authSlice";
 import Button from "../../components/ui/button/Button";
 import { TableBody, TableCell, TableRow } from "../../components/ui/table";
@@ -12,7 +12,7 @@ import { Plans } from "../../config/subscriptionPlans";
 import { Link } from "react-router";
 import AddUserModel from "../../components/UserProfile/AddUserModel";
 import { useModal } from "../../hooks/useModal";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
 import IconButton from "../../components/ui/iconButton/IconButton";
 import toast from "react-hot-toast";
 import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
@@ -43,14 +43,23 @@ const Customers = () => {
     [users]
   );
 
+  const handleDelete= useCallback( async (id:any)=>{
+    try {
+      await baseApi.delete(`${endpoints.deleteUser}?id=${id}`,{headers:{Authorization:token}}); 
+      dispatch(removeUser(id));
+    } catch (error) {
+      toast.error(GetApiErrorMessage(error));
+    }
+  },[users, dispatch]);
+
   return (
     <>
       <PageMeta title={"Users | Petro411"} description="" />
       <Header isLoading={loading} onReload={request} />
-      <BasicTableOne head={["User", "Role", "Subscription"]}>
+      <BasicTableOne head={["User", "Role", "Subscription", ""]}>
         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
           {users.map((user) => (
-            <TableRow key={user?._id}>
+            <TableRow key={user?._id} className="group">
               <TableCell className="px-5 py-4 sm:px-6 text-start">
                 <Link
                   to={
@@ -87,10 +96,17 @@ const Customers = () => {
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {getActivePlanName(user?.subscription?.priceId)}
               </TableCell>
+              <TableCell className="text-end px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                {
+                  auth?._id !== user?._id &&
+                  <TrashIcon className="opacity-0 group-hover:opacity-100 transition-all cursor-pointer" onClick={()=>handleDelete(user?._id)} height={18} width={18} />
+                }
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </BasicTableOne>
+      {/* <UsersTable/> */}
     </>
   );
 };
@@ -100,19 +116,22 @@ type HeaderProps = {
   onReload: () => void;
 };
 
+const initialValues = {
+  name: "",
+  email: "",
+  password: "",
+  role: "",
+  phone: "",
+  bio: "",
+  permissions: ["read"],
+};
+
 const Header = ({ isLoading, onReload }: HeaderProps) => {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const { isOpen, openModal, closeModal } = useModal();
-  const {request,loading} = useMutation(endpoints.createUser);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "",
-    phone: "",
-    bio: "",
-  });
+  const { request, loading } = useMutation(endpoints.createUser);
+  const [form, setForm] = useState(initialValues);
   const [haveChanges, setHaveChanges] = useState(false);
 
   const handleOnChange = useCallback(
@@ -120,7 +139,18 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
       const { name, value } = e.target;
-      setForm((pre) => ({ ...pre, [name]: value }));
+
+      if (name === "permissions") {
+        setForm((prev) => {
+          const permissions = prev.permissions.includes(value)
+            ? prev.permissions.filter((perm) => perm !== value)
+            : [...prev.permissions, value];
+          return { ...prev, permissions: permissions };
+        });
+      } else {
+        setForm((pre) => ({ ...pre, [name]: value }));
+      }
+
       if (!haveChanges) setHaveChanges(!haveChanges);
     },
     [form]
@@ -134,14 +164,7 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
         dispatch(addUser(res?.user));
         setHaveChanges(false);
         toast.success("New user has been added.");
-        setForm({
-          name:"",
-          email:"",
-          bio:"",
-          phone:"",
-          password:"",
-          role:""
-        })
+        setForm(initialValues);
         closeModal();
       } catch (error) {
         toast.error(GetApiErrorMessage(error));
@@ -164,7 +187,7 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
               <ArrowPathIcon
                 height={18}
                 width={18}
-                className={`transition-colors group-hover:text-white`}
+                className={`transition-colors dark:group-hover:text-white`}
               />
             </IconButton>
           </li>
@@ -176,6 +199,7 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
         </ol>
       </div>
       <AddUserModel
+      user={null}
         isOpen={isOpen}
         closeModal={closeModal}
         onSubmit={handleSave}

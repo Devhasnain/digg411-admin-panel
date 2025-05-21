@@ -19,10 +19,13 @@ const usersSlice = createSlice({
     },
     addUser:(state,action)=>{
       state.users = [...state.users,action.payload]
+    },
+    removeUser:(state,action)=>{
+      state.users = state.users.filter((item)=>item._id !== action.payload)
     }
   },
 });
 
-export const { setUsers, addUser } = usersSlice.actions;
+export const { setUsers, addUser, removeUser } = usersSlice.actions;
 export const getUsers = (state: RootState) => state.users.users;
 export default usersSlice.reducer;

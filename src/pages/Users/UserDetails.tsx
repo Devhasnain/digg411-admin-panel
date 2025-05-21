@@ -5,10 +5,23 @@ import { useQuery } from "../../hooks/useQuery";
 import { endpoints } from "../../config/api";
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../store/slices/authSlice";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import UserMetaCard from "../../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../../components/UserProfile/UserInfoCard";
 import { useModal } from "../../hooks/useModal";
+import toast from "react-hot-toast";
+import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
+import { useMutation } from "../../hooks/useMutation";
+import { useMutationPut } from "../../hooks/useMutationPut";
+
+let initialValues = {
+  name: "",
+  email: "",
+  phone: "",
+  bio: "",
+  role: "",
+  permissions: ["read"],
+};
 
 export default function UserDetails() {
   const { id } = useParams();
@@ -19,27 +32,42 @@ export default function UserDetails() {
     `${endpoints.getUser}?id=${id}`,
     token ?? ""
   );
+  const updateApi = useMutationPut(endpoints.updateUser);
   const { isOpen, openModal, closeModal } = useModal();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    bio: "",
-    role:""
-  });
+  const [form, setForm] = useState(initialValues);
 
   const [haveChanges, setHaveChanges] = useState(false);
 
   const handleOnChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
       const { name, value } = e.target;
-      setForm((pre) => ({ ...pre, [name]: value }));
+      if (name === "permissions") {
+        setForm((prev) => {
+          const permissions = prev.permissions.includes(value)
+            ? prev.permissions.filter((perm) => perm !== value)
+            : [...prev.permissions, value];
+          return { ...prev, permissions: permissions };
+        });
+      } else {
+        setForm((pre) => ({ ...pre, [name]: value }));
+      }
       if (!haveChanges) setHaveChanges(!haveChanges);
     },
     [form]
   );
 
-  const handleSave = useCallback(() => {}, [form, data]);
+  const handleSave = useCallback(async (e:FormEvent) => {
+    try {
+      e.preventDefault()
+      await updateApi.request({ ...form, id: user?._id }, null, token??"");
+      // dispatch(updateU )
+      toast.success("User Profile Updated.");
+    } catch (error) {
+      toast.error(GetApiErrorMessage(error));
+    }
+  }, [form, data]);
 
   useEffect(() => {
     if (data?.user) {
@@ -49,10 +77,11 @@ export default function UserDetails() {
         email: user?.email,
         phone: user?.phone,
         bio: user?.bio,
-        role : user?.role
+        role: user?.role,
+        permissions: user?.permissions ?? initialValues.permissions,
       });
     }
-  }, [data, dispatch]);
+  }, [data]);
 
   return (
     <>
@@ -69,7 +98,7 @@ export default function UserDetails() {
             form={form}
             onChange={handleOnChange}
             haveChanges={haveChanges}
-            loading={loading}
+            loading={loading || updateApi.loading}
           />
           <UserInfoCard user={user} />
         </div>

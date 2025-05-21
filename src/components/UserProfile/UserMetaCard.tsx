@@ -13,6 +13,7 @@ type Props = {
     password?: string;
     phone: string;
     bio: string;
+    permissions: string[];
   };
   onChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -84,6 +85,7 @@ export default function UserMetaCard({
         </div>
       </div>
       <AddUserModel
+        user={user}
         isOpen={isOpen}
         closeModal={closeModal}
         onSubmit={onSubmit}
