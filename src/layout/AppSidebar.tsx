@@ -10,6 +10,7 @@ import {
   GroupIcon,
   HorizontaLDots,
   ListIcon,
+  MailIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -18,6 +19,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import Logo from "../components/brand/Logo";
+import { RectangleGroupIcon } from "@heroicons/react/24/outline";
 // import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
@@ -50,30 +52,41 @@ const navItems: NavItem[] = [
     path: "/users",
   },
   {
+    icon: <RectangleGroupIcon />,
+    name: "Mineral",
+    // path: "/mineral",
+    subItems: [{ name: "Add New", path: "/add-mineral" },{ name: "List", path: "/mineral" }],
+  },
+  {
     name: "Forms",
     icon: <ListIcon />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  // },
   {
     name: "Pages",
     icon: <PageIcon />,
     subItems: [
-      { name: "Faqs", path: "/faqs", },
-      { name: "Terms & Conditions", path: "/terms", },
-      { name: "Privacy Policy", path: "/privacy-policy", },
-      { name: "Blank Page", path: "/blank", },
-      { name: "404 Error", path: "/error-404", },
+      { name: "Faqs", path: "/faqs" },
+      { name: "Terms & Conditions", path: "/terms" },
+      { name: "Privacy Policy", path: "/privacy-policy" },
+      // { name: "Blank Page", path: "/blank" },
+      // { name: "404 Error", path: "/error-404" },
     ],
   },
-   {
+  {
     icon: <TableIcon />,
     name: "Contact",
     path: "/contact",
+  },
+   {
+    icon: <MailIcon />,
+    name: "News Letters",
+    path: "/newsletters",
   },
 ];
 
@@ -321,7 +334,7 @@ const AppSidebar: React.FC = () => {
       >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <Logo/>
+            <Logo />
           ) : (
             <img
               src="/images/logo/logo.png"

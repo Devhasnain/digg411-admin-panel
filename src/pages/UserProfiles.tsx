@@ -11,6 +11,15 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import GetApiErrorMessage from "../utils/GetApiErrorMessage";
 
+const initialValues = {
+  name: "",
+  email: "",
+  role: "",
+  phone: "",
+  bio: "",
+  permissions: ["read"],
+};
+
 export default function UserProfiles() {
   const user = useSelector(getUser);
 
@@ -18,21 +27,24 @@ export default function UserProfiles() {
   const token = useSelector(getToken);
   const dispatch = useDispatch();
   const { loading, request } = useMutation(endpoints.updateProfile);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    role: "",
-    phone: "",
-    bio: "",
-  });
   const [haveChanges, setHaveChanges] = useState(false);
+  const [form, setForm] = useState(initialValues);
 
   const handleOnChange = useCallback(
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
       const { name, value } = e.target;
-      setForm((pre) => ({ ...pre, [name]: value }));
+      if (name === "permissions") {
+        setForm((prev) => {
+          const permissions = prev.permissions.includes(value)
+            ? prev.permissions.filter((perm) => perm !== value)
+            : [...prev.permissions, value];
+          return { ...prev, permissions: permissions };
+        });
+      } else {
+        setForm((pre) => ({ ...pre, [name]: value }));
+      }
       if (!haveChanges) setHaveChanges(!haveChanges);
     },
     [form]
@@ -57,11 +69,12 @@ export default function UserProfiles() {
   useEffect(() => {
     if (user) {
       setForm({
-        name: user?.name,
-        email: user?.email,
-        phone: user.phone,
-        bio: user?.bio,
-        role: user?.role,
+        name:user?.user??"",
+        email:user?.email??"",
+        phone:user?.phone??"",
+        role:user?.role??"",
+        permissions:user?.permissions??initialValues?.permissions,
+        bio:user?.bio??""
       });
     }
 

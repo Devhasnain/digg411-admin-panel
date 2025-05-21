@@ -32,6 +32,8 @@ export const endpoints = {
   deleteFaqs:"/admin/faq/delete",
   getPage:"/admin/page/get",
   updatePage:"/admin/page/update",
+  updateUser:"/admin/update-user",
+  deleteUser:"/admin/delete-user",
 }
 
 
