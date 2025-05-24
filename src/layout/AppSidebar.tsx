@@ -19,7 +19,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import Logo from "../components/brand/Logo";
-import { RectangleGroupIcon } from "@heroicons/react/24/outline";
+import { MapPinIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
 // import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
@@ -56,6 +56,11 @@ const navItems: NavItem[] = [
     name: "Mineral",
     // path: "/mineral",
     subItems: [{ name: "Add New", path: "/add-mineral" },{ name: "List", path: "/mineral" }],
+  },
+  {
+    icon: <MapPinIcon />,
+    name: "Locations",
+    path: "/locations",
   },
   {
     name: "Forms",

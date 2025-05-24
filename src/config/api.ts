@@ -34,6 +34,11 @@ export const endpoints = {
   updatePage:"/admin/page/update",
   updateUser:"/admin/update-user",
   deleteUser:"/admin/delete-user",
+  addLocation:"/admin/locations/add",
+  getLocations:"/admin/locations",
+  getContacts:"/admin/contact",
+  getNewsLetters:"/admin/newsletter",
+  getAnalytics:"/admin/analytics",
 }
 
 

@@ -8,6 +8,10 @@ import authSlice from './slices/authSlice';
 import usersSlice from './slices/usersSlice';
 import faqSlice from './slices/faqSlice';
 import pageSlice from './slices/pageSlice';
+import locationsSlice from './slices/locationsSlice';
+import contactSlice from './slices/contactSlice';
+import newsLettersSlice from './slices/newsLettersSlice';
+import dashboardSlice from './slices/dashboardSlice';
 
 
 const rootReducer = combineReducers({
@@ -15,7 +19,11 @@ const rootReducer = combineReducers({
   auth: authSlice,
   users: usersSlice,
   faq: faqSlice,
-  page: pageSlice
+  page: pageSlice,
+  locations: locationsSlice,
+  contacts:contactSlice,
+  newsletters:newsLettersSlice,
+  dashboard:dashboardSlice
 });
 
 const persistConfig = {
