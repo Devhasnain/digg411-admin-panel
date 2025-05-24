@@ -27,6 +27,7 @@ import Contact from "./pages/Contact";
 import NewsLetters from "./pages/NewsLetters";
 import MineralList from "./pages/MineralList";
 import AddMineral from "./pages/MineralList/AddMineral";
+import Locations from "./pages/Locations";
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/newsletters" element={<NewsLetters />} />
             <Route path="/mineral" element={<MineralList />} />
             <Route path="/add-mineral" element={<AddMineral />} />
+            <Route path="/locations" element={<Locations />} />
 
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />

@@ -3,6 +3,7 @@ import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Tile from "../../components/common/Tile";
 import AddMineralForm from "./AddMineralForm";
+import UploadMineralFile from "./UploadMineralFile";
 
 const AddMineral = () => {
     const [activeTab,setActiveTab] = useState("manual")
@@ -19,6 +20,9 @@ const AddMineral = () => {
 
         {
             activeTab === "manual" && <AddMineralForm/>
+        }
+        {
+            activeTab === "upload" && <UploadMineralFile/>
         }
         </div>
 
