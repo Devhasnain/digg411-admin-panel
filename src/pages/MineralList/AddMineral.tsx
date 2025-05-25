@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { memo, useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Tile from "../../components/common/Tile";
@@ -31,4 +31,4 @@ const AddMineral = () => {
   );
 };
 
-export default AddMineral;
+export default memo(AddMineral);

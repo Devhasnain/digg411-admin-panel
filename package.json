@@ -28,6 +28,7 @@
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
     "flatpickr": "^4.6.13",
+    "papaparse": "^5.5.3",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.5",
     "quill": "^2.0.3",
@@ -44,12 +45,14 @@
     "react-router": "^7.1.5",
     "redux-persist": "^6.0.0",
     "swiper": "^11.2.3",
-    "tailwind-merge": "^3.0.1"
+    "tailwind-merge": "^3.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
     "@tailwindcss/postcss": "^4.0.8",
     "@types/node": "^22.15.17",
+    "@types/papaparse": "^5.3.16",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
