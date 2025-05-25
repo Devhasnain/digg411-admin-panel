@@ -1,26 +1,34 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, memo, useState } from "react";
 import TodoInput from "../../components/ui/todoInput/TodoInput";
 import Input from "../../components/form/input/InputField";
 import Label from "../../components/form/Label";
+import SelectLocation from "./SelectLocation";
+import TextArea from "../../components/form/input/TextArea";
+import Button from "../../components/ui/button/Button";
 
 let initialInputValues = {
   name: "",
   email: "",
+  zipcode: "",
   number: "",
-  address:""
+  address: "",
+  location: "",
+  description: "",
 };
 
 let initialArrayValues = {
   emails: [],
   numbers: [],
-  addresses:[]
+  addresses: [],
 };
 
 const AddMineralForm = () => {
   const [formInputs, setFormInputs] = useState(initialInputValues);
   const [formArray, setFormArray] = useState(initialArrayValues);
 
-  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormInputs((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
 
@@ -51,8 +59,8 @@ const AddMineralForm = () => {
         </div>
         <TodoInput
           type="email"
-          label="Emails"
-          placeholder="Emails"
+          label="Email"
+          placeholder="Email"
           fieldName="emails"
           name="email"
           value={formInputs.email}
@@ -65,8 +73,8 @@ const AddMineralForm = () => {
       </div>
       <div className="grid grid-cols-2 gap-5">
         <TodoInput
-          label="Phone numbers"
-          placeholder="Phone numbers"
+          label="Phone number"
+          placeholder="Phone number"
           fieldName="numbers"
           name="number"
           type="number"
@@ -77,9 +85,9 @@ const AddMineralForm = () => {
           resetInput={handleResetInput}
           removeItem={handleArrayRemoveItem}
         />
-         <TodoInput
-          label="Addresses"
-          placeholder="Addresses"
+        <TodoInput
+          label="Address"
+          placeholder="Address"
           fieldName="addresses"
           name="address"
           type="text"
@@ -91,8 +99,37 @@ const AddMineralForm = () => {
           removeItem={handleArrayRemoveItem}
         />
       </div>
+      <div className="grid grid-cols-2 gap-5">
+        <SelectLocation
+          name="location"
+          value={formInputs.location}
+          onChange={handleOnChange}
+        />
+        <div className="">
+          <Label htmlFor="zipcode">Zipcode</Label>
+          <Input
+            placeholder="Zipcode"
+            type="number"
+            name="zipcode"
+            value={formInputs.zipcode}
+            onChange={handleOnChange}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1">
+        <Label htmlFor="description">Description</Label>
+        <TextArea
+          required={true}
+          rows={10}
+          placeholder="Description"
+          name="description"
+          value={formInputs.description}
+          onChange={handleOnChange}
+        />
+      </div>
+      <Button className="self-start" size="sm">Submit</Button>
     </form>
   );
 };
 
-export default AddMineralForm;
+export default memo(AddMineralForm);
