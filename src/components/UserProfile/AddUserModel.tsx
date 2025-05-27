@@ -21,7 +21,7 @@ type Props = {
     role?: string;
     phone: string;
     bio: string;
-    permissions?:string[]
+    permissions?: string[];
   };
   onChange: (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -134,7 +134,7 @@ const AddUserModel = ({
                   </div>
                 )}
 
-                {"permissions" in form &&  auth?._id !== user?._id ? (
+                {"permissions" in form && auth?._id !== user?._id ? (
                   <div className="col-span-12">
                     <Label htmlFor="permissions">Permissions</Label>
                     <div className="flex flex-row items-center gap-5">
@@ -142,19 +142,27 @@ const AddUserModel = ({
                         (item, index) => (
                           <Checkbox
                             key={index}
-                            label={item[0].toUpperCase() + item.slice(1,item.length)}
+                            label={
+                              item[0].toUpperCase() + item.slice(1, item.length)
+                            }
                             value={item}
                             name="permissions"
                             disabled={item === "read"}
-                            checked={"permissions" in form && form?.permissions?.includes(item) ? true : false}
+                            checked={
+                              "permissions" in form &&
+                              form?.permissions?.includes(item)
+                                ? true
+                                : false
+                            }
                             onChange={onChange}
                           />
                         )
                       )}
-
                     </div>
                   </div>
-                ): <></>}
+                ) : (
+                  <></>
+                )}
 
                 <div className="col-span-12">
                   <Label htmlFor="bio">Bio</Label>
