@@ -69,12 +69,12 @@ export default function UserProfiles() {
   useEffect(() => {
     if (user) {
       setForm({
-        name:user?.user??"",
-        email:user?.email??"",
-        phone:user?.phone??"",
-        role:user?.role??"",
-        permissions:user?.permissions??initialValues?.permissions,
-        bio:user?.bio??""
+        name: user?.user ?? "",
+        email: user?.email ?? "",
+        phone: user?.phone ?? "",
+        role: user?.role ?? "",
+        permissions: user?.permissions ?? initialValues?.permissions,
+        bio: user?.bio ?? "",
       });
     }
 
