@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ChevronDownIcon } from "../../../icons";
 
 type AccordionProps = {
@@ -45,4 +45,4 @@ const Accordion: React.FC<AccordionProps> = ({
   );
 };
 
-export default Accordion;
+export default memo(Accordion);

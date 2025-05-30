@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 type BadgeVariant = "light" | "solid";
 type BadgeSize = "sm" | "md";
 type BadgeColor =
@@ -74,4 +76,4 @@ const Badge: React.FC<BadgeProps> = ({
   );
 };
 
-export default Badge;
+export default memo(Badge);

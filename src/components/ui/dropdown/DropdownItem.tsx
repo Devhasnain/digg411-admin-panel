@@ -1,4 +1,5 @@
 import type React from "react";
+import { memo } from "react";
 import { Link } from "react-router";
 
 interface DropdownItemProps {
@@ -11,7 +12,7 @@ interface DropdownItemProps {
   children: React.ReactNode;
 }
 
-export const DropdownItem: React.FC<DropdownItemProps> = ({
+export const DropdownItem: React.FC<DropdownItemProps> =  memo(({
   tag = "button",
   to,
   onClick,
@@ -43,4 +44,4 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
       {children}
     </button>
   );
-};
+});

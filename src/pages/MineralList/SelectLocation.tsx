@@ -1,16 +1,15 @@
-import { memo, useEffect, useMemo, useState } from "react";
-import Label from "../../components/form/Label";
-import { Dropdown } from "../../components/ui/dropdown/Dropdown";
-import Input from "../../components/form/input/InputField";
-import { useModal } from "../../hooks/useModal";
+import { memo, useEffect, useState } from "react";
+import { Label } from "../../components/index";
 import { useQuery } from "../../hooks/useQuery";
 import { endpoints } from "../../config/api";
 import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../store/slices/authSlice";
 import { getLocations, setLocations } from "../../store/slices/locationsSlice";
-import { ChevronDownIcon } from "../../icons";
+import AsyncSelect from "react-select/async";
 
 type Props = {
+  required?: boolean;
+  className?: string;
   name: string;
   value: string;
   placeholder?: string;
@@ -18,24 +17,32 @@ type Props = {
 };
 
 const SelectLocation = ({
+  required = false,
   name,
-  value,
   onChange,
   placeholder = "Location",
 }: Props) => {
-  const { isOpen, openModal, closeModal } = useModal();
-  const locations = useSelector(getLocations);
+  const [select, setSelect] = useState<any>(null);
+  const locations = useSelector(getLocations)?.map((item) => {
+    return { label: item?.name, value: item?.code };
+  });
   const token = useSelector(getToken) ?? "";
   const dispatch = useDispatch();
-  const [search, setSearch] = useState("");
 
-  const filteredLocations = useMemo(() => {
+  const filteredLocations = (inputValue: string) => {
     return locations?.filter((item) =>
-      search?.trim()?.length
-        ? item?.name?.toLowerCase()?.includes(search?.toLowerCase())
+      inputValue?.trim()?.length
+        ? item?.label?.toLowerCase()?.includes(inputValue?.toLowerCase())
         : true
     );
-  }, [search, locations]);
+  };
+
+  const promiseOptions = (inputValue: string) =>
+    new Promise<any[]>((resolve) => {
+      setTimeout(() => {
+        resolve(filteredLocations(inputValue));
+      }, 1000);
+    });
 
   const { data, error, loading } = useQuery(
     endpoints.getLocations,
@@ -49,56 +56,25 @@ const SelectLocation = ({
     }
   }, [data, locations]);
 
+  useEffect(() => {
+    if (select?.value && name) {
+      onChange({ target: { name, value: select?.value } });
+    }
+  }, [select]);
+
   return (
     <div className="relative">
-      <Label>Location</Label>
-      <div
-        onClick={!isOpen && !loading ? openModal : () => {}}
-        className="flex flex-row items-center justify-between cursor-pointer h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs text-gray-500 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 
-             border-gray-300 dark:border-gray-700"
-      >
-        <span className="flex-1">
-          {locations?.find((item) => item?._id === value)?.name ?? placeholder}
-        </span>
-        {loading ? (
-          <i
-            className="pi  pi-spinner !animate-spin"
-            style={{ fontSize: "1rem" }}
-          ></i>
-        ) : (
-          <ChevronDownIcon
-            className={`${
-              isOpen ? "rotate-180" : "rotate-0"
-            } transition-all duration-300`}
-            height={20}
-            width={20}
-          />
-        )}
-      </div>
-      <Dropdown className="w-full p-5" isOpen={isOpen} onClose={closeModal}>
-        <Input
-          name="search"
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search location"
-        />
-
-        <ul className="mt-3 h-[30vh] overflow-y-auto">
-          {filteredLocations?.map((item, index) => (
-            <li
-              onClick={() => {
-                onChange({ target: { name, value: item?._id } });
-                closeModal();
-              }}
-              key={index}
-              className="text-[14px] text-gray-500 border-b py-2 cursor-pointer hover:bg-gray-50 px-3"
-            >
-              {item?.name} ({item?.code})
-            </li>
-          ))}
-        </ul>
-      </Dropdown>
+      <Label>{placeholder}</Label>
+      <AsyncSelect
+        className="!h-11"
+        isMulti={false}
+        onChange={(e) => setSelect(e)}
+        cacheOptions
+        required={required}
+        defaultOptions
+        isLoading={loading}
+        loadOptions={promiseOptions}
+      />
     </div>
   );
 };

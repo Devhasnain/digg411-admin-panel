@@ -1,5 +1,5 @@
 import type React from "react";
-import type { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes, memo } from "react";
 
 interface InputProps {
   type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
@@ -86,4 +86,4 @@ const Input: FC<InputProps> = ({
   );
 };
 
-export default Input;
+export default memo(Input);
