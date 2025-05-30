@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const Logo = () => {
   return (
     <div className="flex flex-row items-end gap-2">
@@ -19,4 +21,4 @@ const Logo = () => {
   );
 };
 
-export default Logo;
+export default memo(Logo);

@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 
 interface DropdownProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface DropdownProps {
   className?: string;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown: React.FC<DropdownProps> = memo(({
   isOpen,
   onClose,
   children,
@@ -43,4 +43,4 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {children}
     </div>
   );
-};
+});

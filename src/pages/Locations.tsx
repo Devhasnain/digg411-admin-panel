@@ -6,19 +6,21 @@ import {
   useEffect,
   useState,
 } from "react";
-import PageMeta from "../components/common/PageMeta";
-import IconButton from "../components/ui/iconButton/IconButton";
 import {
   ArrowPathIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
-import Button from "../components/ui/button/Button";
-import Tile from "../components/common/Tile";
+import {
+  Button,
+  Tile,
+  InputField as Input,
+  Label,
+  Select,
+  PageMeta,
+  IconButton,
+  Modal,
+} from "../components/index";
 import { useModal } from "../hooks/useModal";
-import { Modal } from "../components/ui/modal";
-import Label from "../components/form/Label";
-import Input from "../components/form/input/InputField";
-import Select from "../components/form/Select";
 import toast from "react-hot-toast";
 import GetApiErrorMessage from "../utils/GetApiErrorMessage";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +35,7 @@ import {
   getLocations,
   setLocations,
 } from "../store/slices/locationsSlice";
-
+import SelectLocation from "./MineralList/SelectLocation";
 
 const Locations = () => {
   const dispatch = useDispatch();
@@ -170,6 +172,7 @@ const initialValues = {
   name: "",
   type: "",
   code: "",
+  stateCode: "",
 };
 
 const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
@@ -236,8 +239,8 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
             <Select
               options={[
                 {
-                  label: "Country",
-                  value: "country",
+                  label: "County",
+                  value: "county",
                 },
                 {
                   label: "State",
@@ -249,6 +252,18 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
               onChange={onChange}
             />
           </div>
+
+          {form.type === "county" && (
+            <SelectLocation
+              required={true}
+              placeholder="State"
+              className="top-0"
+              name="stateCode"
+              value={form.stateCode}
+              onChange={onChange}
+            />
+          )}
+
           <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
             <Button
               type="button"
@@ -273,4 +288,4 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
   );
 });
 
-export default Locations;
+export default memo(Locations);
