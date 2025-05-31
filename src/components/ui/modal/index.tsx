@@ -1,17 +1,19 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, memo } from "react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBackDropPress?:()=>void;
   className?: string;
   children: React.ReactNode;
   showCloseButton?: boolean; // New prop to control close button visibility
   isFullscreen?: boolean; // Default to false for backwards compatibility
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC<ModalProps> = memo(({
   isOpen,
   onClose,
+  onBackDropPress,
   children,
   className,
   showCloseButton = true, // Default to true for backwards compatibility
@@ -58,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
       {!isFullscreen && (
         <div
           className="fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"
-          onClick={onClose}
+          onClick={onBackDropPress}
         ></div>
       )}
       <div
@@ -91,4 +93,4 @@ export const Modal: React.FC<ModalProps> = ({
       </div>
     </div>
   );
-};
+});

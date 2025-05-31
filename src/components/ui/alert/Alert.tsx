@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router";
 
 interface AlertProps {
@@ -141,4 +142,4 @@ const Alert: React.FC<AlertProps> = ({
   );
 };
 
-export default Alert;
+export default memo(Alert);

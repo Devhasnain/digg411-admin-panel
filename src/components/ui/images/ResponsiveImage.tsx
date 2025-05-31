@@ -1,4 +1,6 @@
-export default function ResponsiveImage() {
+import { memo } from "react";
+
+ const ResponsiveImage=()=>{
   return (
     <div className="relative">
       <div className="overflow-hidden">
@@ -11,3 +13,4 @@ export default function ResponsiveImage() {
     </div>
   );
 }
+export default memo(ResponsiveImage)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 interface Option {
   value: string;
@@ -71,4 +71,4 @@ const Select: React.FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default memo(Select);

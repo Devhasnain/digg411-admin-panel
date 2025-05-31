@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
@@ -9,7 +9,7 @@ import { EyeCloseIcon, EyeIcon } from "../../icons";
 
 type Step = "email" | "otp" | "reset";
 
-export default function ForgetpasswordForm() {
+const ForgetpasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<Step>("email");
   const [form, setForm] = useState({
@@ -124,7 +124,10 @@ export default function ForgetpasswordForm() {
                         value={form.password}
                         required={true}
                         onChange={(e) =>
-                          setForm((pre) => ({ ...pre, password: e.target.value }))
+                          setForm((pre) => ({
+                            ...pre,
+                            password: e.target.value,
+                          }))
                         }
                       />
                       <span
@@ -162,4 +165,6 @@ export default function ForgetpasswordForm() {
       </div>
     </div>
   );
-}
+};
+
+export default memo(ForgetpasswordForm);

@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, memo, useCallback, useState } from "react";
 import { Link } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
@@ -11,7 +11,7 @@ import { endpoints, UserTypes } from "../../config/api";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../store/slices/authSlice";
 
-export default function SignInForm() {
+ const SignInForm =()=> {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const { request, loading } = useMutation(endpoints.login);
@@ -123,3 +123,4 @@ export default function SignInForm() {
     </div>
   );
 }
+export default memo(SignInForm)
