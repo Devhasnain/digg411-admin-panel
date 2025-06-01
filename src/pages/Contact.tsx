@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
@@ -13,9 +13,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../store/slices/authSlice";
 import { useQuery } from "../hooks/useQuery";
 import { endpoints } from "../config/api";
-import { getContacts, setContacts } from "../store/slices/contactSlice";
+import {
+  deleteContact,
+  getContacts,
+  setContacts,
+} from "../store/slices/contactSlice";
+import { TrashBinIcon } from "../icons";
+import toast from "react-hot-toast";
+import { useDeleteRequest } from "../hooks/useDeleteRequest";
 
 export default function Contact() {
+  const [globalFilter, setGlobalFilter] = useState("");
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const contacts = useSelector(getContacts);
@@ -24,6 +32,7 @@ export default function Contact() {
     token ?? "",
     !contacts.length
   );
+  const deleteContactApi = useDeleteRequest();
 
   const renderHeader = () => {
     return (
@@ -36,6 +45,8 @@ export default function Contact() {
             <input
               //   ref={inputRef}
               type="text"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search or type command..."
               className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm font-normal text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
             />
@@ -49,6 +60,27 @@ export default function Contact() {
       </div>
     );
   };
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (!id) return;
+      const deletePromise = toast.promise(
+        deleteContactApi.request({
+          path: `${endpoints.deleteContact}?id=${id}`,
+        }),
+        {
+          loading: "Deleting Contact...",
+          success: "Contact deleted successfully!",
+          error: "Failed to delete Contact.",
+        }
+      );
+
+      deletePromise.then(() => {
+        dispatch(deleteContact(id));
+      });
+    },
+    [contacts]
+  );
 
   useEffect(() => {
     if (data?.contacts?.length) {
@@ -86,9 +118,10 @@ export default function Contact() {
             rows={10}
             dataKey="id"
             loading={loading}
-            globalFilterFields={["name", "email", "phone", "message"]}
+            globalFilterFields={["name", "email", "phone", "message", ""]}
             header={renderHeader}
             emptyMessage="No contacts found!"
+            globalFilter={globalFilter}
           >
             <Column
               field="name"
@@ -139,6 +172,17 @@ export default function Contact() {
                 </span>
               )}
               style={{ minWidth: "12rem" }}
+            />
+            <Column
+              body={(rowData) => (
+                <span className="text-gray-500 text-sm font-normal !line-clamp-2">
+                  <TrashBinIcon
+                    className="h-4 w-4 cursor-pointer"
+                    onClick={() => handleDelete(rowData?._id)}
+                  />
+                </span>
+              )}
+              style={{ minWidth: "2rem" }}
             />
           </DataTable>
         </div>

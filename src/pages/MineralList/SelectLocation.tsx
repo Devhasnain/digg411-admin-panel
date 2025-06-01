@@ -11,7 +11,7 @@ type Props = {
   required?: boolean;
   className?: string;
   name: string;
-  value: string;
+  value: any;
   placeholder?: string;
   onChange: (e: any) => void;
 };
@@ -23,7 +23,7 @@ const SelectLocation = ({
   placeholder = "Location",
 }: Props) => {
   const [select, setSelect] = useState<any>(null);
-  const locations = useSelector(getLocations)?.map((item) => {
+  const locations = useSelector(getLocations)?.filter((item)=>item?.type==="state")?.map((item) => {
     return { label: item?.name, value: item?.code };
   });
   const token = useSelector(getToken) ?? "";
@@ -58,7 +58,7 @@ const SelectLocation = ({
 
   useEffect(() => {
     if (select?.value && name) {
-      onChange({ target: { name, value: select?.value } });
+      onChange({ target: { name, value: select, test: select } });
     }
   }, [select]);
 

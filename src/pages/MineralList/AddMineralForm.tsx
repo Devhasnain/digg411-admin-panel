@@ -5,6 +5,17 @@ import Label from "../../components/form/Label";
 import SelectLocation from "./SelectLocation";
 import TextArea from "../../components/form/input/TextArea";
 import Button from "../../components/ui/button/Button";
+import { MultiSelect } from "primereact/multiselect";
+import { useSelector } from "react-redux";
+import { getLocations } from "../../store/slices/locationsSlice";
+
+const cities = [
+  { name: "New York", code: "NY" },
+  { name: "Rome", code: "RM" },
+  { name: "London", code: "LDN" },
+  { name: "Istanbul", code: "IST" },
+  { name: "Paris", code: "PRS" },
+];
 
 let initialInputValues = {
   name: "",
@@ -12,7 +23,7 @@ let initialInputValues = {
   zipcode: "",
   number: "",
   address: "",
-  location: "",
+  location: { label: "", value: "" },
   description: "",
 };
 
@@ -23,6 +34,7 @@ let initialArrayValues = {
 };
 
 const AddMineralForm = () => {
+  const location = useSelector(getLocations);
   const [formInputs, setFormInputs] = useState(initialInputValues);
   const [formArray, setFormArray] = useState(initialArrayValues);
 
@@ -106,6 +118,18 @@ const AddMineralForm = () => {
           onChange={handleOnChange}
         />
         <div className="">
+          <Label htmlFor="counties">Counties</Label>
+          <MultiSelect
+            placeholder="Select Counties"
+            options={location?.filter((item)=>item?.type === "county" && item?.state?.name === formInputs.location.label)}
+            optionLabel="name"
+            filter={true}
+            className="w-full !rounded-lg"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-5">
+        <div className="">
           <Label htmlFor="zipcode">Zipcode</Label>
           <Input
             placeholder="Zipcode"
@@ -127,7 +151,9 @@ const AddMineralForm = () => {
           onChange={handleOnChange}
         />
       </div>
-      <Button className="self-start" size="sm">Submit</Button>
+      <Button className="self-start" size="sm">
+        Submit
+      </Button>
     </form>
   );
 };

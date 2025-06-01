@@ -1,129 +1,122 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Modal } from "../ui/modal";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
+import { useModal } from "../../hooks/useModal";
+import toast from "react-hot-toast";
+import { useMutationPut } from "../../hooks/useMutationPut";
+import { endpoints } from "../../config/api";
 
-type Props = {
-  isOpen: boolean;
-  setIsOpen: (name: boolean) => void;
-};
-
-const ResetPasswordModal = ({ setIsOpen, isOpen }: Props) => {
+const ResetPasswordModal = () => {
+  const { isOpen, openModal, closeModal } = useModal();
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [haveChanges, setHaveChanges] = useState(false);
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-    setHaveChanges(false);
-  };
-
+  const { request, loading } = useMutationPut(endpoints.updatePassword);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    setHaveChanges(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.newPassword !== form.confirmPassword) {
-      alert("New passwords do not match");
+      toast.error("New password and confirm password doesn't match.");
       return;
     }
 
-    try {
-      setLoading(true);
-      // Simulate an API call here
-      await new Promise((res) => setTimeout(res, 1000));
-      alert("Password successfully updated!");
+    const promise = toast.promise(request(form), {
+      loading: "Updating password...",
+      success: "Password updated successfully!",
+      error: "Failed to update password.",
+    });
+
+    promise.then(() => {
+      setForm({ newPassword: "", confirmPassword: "", currentPassword: "" });
       closeModal();
-    } catch (err) {
-      alert("Failed to update password.");
-    } finally {
-      setLoading(false);
-    }
+    });
   };
   return (
-    <Modal isOpen={isOpen} onClose={closeModal} className="max-w-md">
-      <div className="relative w-full bg-white rounded-2xl p-6 dark:bg-gray-800">
-        <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
-          Reset Password
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          Enter your current password and choose a new one.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="currentPassword">Current Password</Label>
-            <Input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              placeholder="••••••••"
-              value={form.currentPassword}
-              required
-              onChange={handleChange}
-            />
-          </div>
+    <>
+      <button
+        onClick={openModal}
+        className="flex min-w-[9rem] items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+      >
+        Reset Password
+      </button>
 
-          <div>
-            <Label htmlFor="newPassword">New Password</Label>
-            <Input
-              id="newPassword"
-              name="newPassword"
-              type="password"
-              placeholder="At least 8 characters"
-              value={form.newPassword}
-              required
-              onChange={handleChange}
-            />
-          </div>
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-md">
+        <div className="relative w-full bg-white rounded-2xl p-6 dark:bg-gray-800">
+          <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+            Reset Password
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            Enter your current password and choose a new one.
+          </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="currentPassword">Current Password</Label>
+              <Input
+                id="currentPassword"
+                name="currentPassword"
+                type="text"
+                placeholder="••••••••"
+                min={6}
+                value={form.currentPassword}
+                required
+                onChange={handleChange}
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="confirmPassword">Confirm New Password</Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="Repeat new password"
-              value={form.confirmPassword}
-              required
-              onChange={handleChange}
-            />
-          </div>
+            <div>
+              <Label htmlFor="newPassword">New Password</Label>
+              <Input
+                id="newPassword"
+                name="newPassword"
+                type="text"
+                placeholder="New Password"
+                min={6}
+                value={form.newPassword}
+                required
+                onChange={handleChange}
+              />
+            </div>
 
-          <div className="flex justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={loading || !haveChanges}
-              loading={loading}
-            >
-              Update Password
-            </Button>
-          </div>
-        </form>
-      </div>
-    </Modal>
+            <div>
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="text"
+                min={6}
+                placeholder="Repeat new password"
+                value={form.confirmPassword}
+                required
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={closeModal}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={loading}>
+                Update Password
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 };
 

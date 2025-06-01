@@ -795,3 +795,15 @@ span.flatpickr-weekday,
 .css-13cymwt-control .css-1dimb5e-singleValue{
   @apply !text-sm !text-gray-800 dark:bg-gray-900 dark:!text-white/90
 }
+
+.p-component{
+  @apply !text-sm
+}
+
+.css-1jqq78o-placeholder{
+    @apply !text-sm
+  }
+
+  .p-multiselect{
+    @apply !h-11
+  }

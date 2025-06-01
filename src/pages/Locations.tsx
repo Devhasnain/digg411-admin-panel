@@ -32,21 +32,26 @@ import { Column } from "primereact/column";
 import { useQuery } from "../hooks/useQuery";
 import {
   addLocation,
+  deleteLocation,
   getLocations,
   setLocations,
 } from "../store/slices/locationsSlice";
 import SelectLocation from "./MineralList/SelectLocation";
+import { TrashBinIcon } from "../icons";
+import { useDeleteRequest } from "../hooks/useDeleteRequest";
 
 const Locations = () => {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
   const locations = useSelector(getLocations);
   const { isOpen, openModal, closeModal } = useModal();
+  const [globalFilter, setGlobalFilter] = useState("");
   const { request, data, loading } = useQuery(
     endpoints.getLocations,
     token ?? "",
     !locations?.length
   );
+  const deleteLocApi = useDeleteRequest();
 
   const renderHeader = () => {
     return (
@@ -57,7 +62,8 @@ const Locations = () => {
               <MagnifyingGlassIcon height={18} width={18} />
             </span>
             <input
-              //   ref={inputRef}
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
               type="text"
               placeholder="Search or type command..."
               className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm font-normal text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
@@ -72,6 +78,22 @@ const Locations = () => {
       </div>
     );
   };
+
+  const handleDeleteLocation = useCallback((id: string) => {
+    if (!id) return;
+    const deletePromise = toast.promise(
+      deleteLocApi.request({ path: `${endpoints.deleteLocation}?id=${id}` }),
+      {
+        loading: "Deleting location...",
+        success: "Location deleted successfully!",
+        error: "Failed to delete location.",
+      }
+    );
+
+    deletePromise.then(() => {
+      dispatch(deleteLocation(id));
+    });
+  }, []);
 
   useEffect(() => {
     if (data?.locations?.length) {
@@ -113,12 +135,13 @@ const Locations = () => {
           <DataTable
             value={locations}
             paginator
-            rows={5}
+            rows={10}
             dataKey="id"
             loading={loading}
-            globalFilterFields={["name", "code", "type"]}
+            globalFilterFields={["name", "code", "type", "state", ""]}
             header={renderHeader}
-            emptyMessage="No customers found."
+            emptyMessage="No locations found."
+            globalFilter={globalFilter}
           >
             <Column
               field="name"
@@ -154,7 +177,31 @@ const Locations = () => {
                   {rowData?.type}
                 </span>
               )}
-              style={{ minWidth: "14rem" }}
+              style={{ minWidth: "12rem" }}
+            />
+            <Column
+              field="state"
+              header={
+                <span className="text-gray-500 text-sm font-normal">State</span>
+              }
+              body={(rowData) => (
+                <span className="text-gray-500 text-sm font-normal">
+                  {rowData?.state?.name}
+                </span>
+              )}
+              style={{ minWidth: "12rem" }}
+            />
+            <Column
+              field=""
+              body={(rowData) => (
+                <span className="text-gray-500 text-sm font-normal">
+                  <TrashBinIcon
+                    className="h-4 w-4 cursor-pointer"
+                    onClick={() => handleDeleteLocation(rowData?._id)}
+                  />
+                </span>
+              )}
+              style={{ minWidth: "0.5rem" }}
             />
           </DataTable>
         </div>
@@ -172,7 +219,7 @@ const initialValues = {
   name: "",
   type: "",
   code: "",
-  stateCode: "",
+  location: { label: "", value: "" },
 };
 
 const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
@@ -194,7 +241,14 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
     async (e: FormEvent) => {
       try {
         e.preventDefault();
-        const res = await addLocApi.request(form, null, token ?? "");
+        const res = await addLocApi.request(
+          {
+            ...form,
+            state: { name: form.location.label, code: form.location.value },
+          },
+          null,
+          token ?? ""
+        );
         dispatch(addLocation(res.location));
         setForm(initialValues);
         toast.success("New location has been added.");
@@ -223,18 +277,6 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
             />
           </div>
           <div className="">
-            <Label htmlFor="code">Code</Label>
-            <Input
-              placeholder="Code"
-              name="code"
-              required={true}
-              value={form.code}
-              onChange={onChange}
-              min={1}
-              type="text"
-            />
-          </div>
-          <div className="">
             <Label htmlFor="type">Type</Label>
             <Select
               options={[
@@ -253,13 +295,28 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
             />
           </div>
 
+          {form.type === "state" && (
+            <div className="">
+              <Label htmlFor="code">Code</Label>
+              <Input
+                placeholder="Code"
+                name="code"
+                required={true}
+                value={form.code}
+                onChange={onChange}
+                min={1}
+                type="text"
+              />
+            </div>
+          )}
+
           {form.type === "county" && (
             <SelectLocation
               required={true}
               placeholder="State"
               className="top-0"
-              name="stateCode"
-              value={form.stateCode}
+              name="location"
+              value={form.location}
               onChange={onChange}
             />
           )}
