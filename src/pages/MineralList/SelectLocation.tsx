@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Label } from "../../components/index";
 import { useQuery } from "../../hooks/useQuery";
 import { endpoints } from "../../config/api";
@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getToken } from "../../store/slices/authSlice";
 import { getLocations, setLocations } from "../../store/slices/locationsSlice";
 import AsyncSelect from "react-select/async";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   required?: boolean;
   className?: string;
   name: string;
   value: any;
+  label?: string;
   placeholder?: string;
   onChange: (e: any) => void;
 };
@@ -20,12 +22,16 @@ const SelectLocation = ({
   required = false,
   name,
   onChange,
+  value,
+  label,
   placeholder = "Location",
 }: Props) => {
-  const [select, setSelect] = useState<any>(null);
-  const locations = useSelector(getLocations)?.filter((item)=>item?.type==="state")?.map((item) => {
-    return { label: item?.name, value: item?.code };
-  });
+  const [select, setSelect] = useState<any>(value);
+  const locations = useSelector(getLocations)
+    ?.filter((item) => item?.type === "state")
+    ?.map((item) => {
+      return { label: item?.name, value: item?.code };
+    });
   const token = useSelector(getToken) ?? "";
   const dispatch = useDispatch();
 
@@ -37,14 +43,17 @@ const SelectLocation = ({
     );
   };
 
-  const promiseOptions = (inputValue: string) =>
-    new Promise<any[]>((resolve) => {
-      setTimeout(() => {
-        resolve(filteredLocations(inputValue));
-      }, 1000);
-    });
+  const promiseOptions = useCallback(
+    (inputValue: string) =>
+      new Promise<any[]>((resolve) => {
+        setTimeout(() => {
+          resolve(filteredLocations(inputValue));
+        }, 1000);
+      }),
+    [locations]
+  );
 
-  const { data, error, loading } = useQuery(
+  const { request, data, error, loading } = useQuery(
     endpoints.getLocations,
     token,
     !locations.length
@@ -62,19 +71,40 @@ const SelectLocation = ({
     }
   }, [select]);
 
+  useEffect(() => {
+    if (value) {
+      setSelect(value);
+    }
+  }, [value]);
+
   return (
     <div className="relative">
-      <Label>{placeholder}</Label>
-      <AsyncSelect
-        className="!h-11"
-        isMulti={false}
-        onChange={(e) => setSelect(e)}
-        cacheOptions
-        required={required}
-        defaultOptions
-        isLoading={loading}
-        loadOptions={promiseOptions}
-      />
+      {label && <Label>{label}</Label>}
+      <div className="flex flex-row items-center gap-3">
+        <AsyncSelect
+          placeholder={placeholder}
+          className="!h-11 w-full"
+          isMulti={false}
+          value={select}
+          onChange={(e) => setSelect(e)}
+          cacheOptions
+          required={required}
+          defaultOptions
+          isLoading={loading}
+          loadOptions={promiseOptions}
+        />
+        {!locations?.length ? (
+          <ArrowPathIcon
+            onClick={request}
+            className={`cursor-pointer ${loading && "animate-spin"}`}
+            height={20}
+            width={20}
+            color="gray"
+          />
+        ) : (
+          <></>
+        )}
+      </div>
     </div>
   );
 };

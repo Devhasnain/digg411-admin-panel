@@ -45,39 +45,12 @@ const Locations = () => {
   const token = useSelector(getToken);
   const locations = useSelector(getLocations);
   const { isOpen, openModal, closeModal } = useModal();
-  const [globalFilter, setGlobalFilter] = useState("");
   const { request, data, loading } = useQuery(
     endpoints.getLocations,
     token ?? "",
     !locations?.length
   );
   const deleteLocApi = useDeleteRequest();
-
-  const renderHeader = () => {
-    return (
-      <div className="flex justify-end">
-        <form>
-          <div className="relative">
-            <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
-              <MagnifyingGlassIcon height={18} width={18} />
-            </span>
-            <input
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              type="text"
-              placeholder="Search or type command..."
-              className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm font-normal text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
-            />
-
-            <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-              <span> ⌘ </span>
-              <span> K </span>
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  };
 
   const handleDeleteLocation = useCallback((id: string) => {
     if (!id) return;
@@ -139,12 +112,13 @@ const Locations = () => {
             dataKey="id"
             loading={loading}
             globalFilterFields={["name", "code", "type", "state", ""]}
-            header={renderHeader}
             emptyMessage="No locations found."
-            globalFilter={globalFilter}
+            rowsPerPageOptions={[5, 10, 20, 30, 40, 50, 100]}
           >
             <Column
               field="name"
+              sortable={true}
+              filter={true}
               header={
                 <span className="text-gray-500 text-sm font-normal">Name</span>
               }
@@ -157,6 +131,8 @@ const Locations = () => {
             />
             <Column
               field="code"
+              sortable={true}
+              filter={true}
               header={
                 <span className="text-gray-500 text-sm font-normal">Code</span>
               }
@@ -169,6 +145,8 @@ const Locations = () => {
             />
             <Column
               field="type"
+              sortable={true}
+              filter={true}
               header={
                 <span className="text-gray-500 text-sm font-normal">Type</span>
               }
@@ -181,6 +159,8 @@ const Locations = () => {
             />
             <Column
               field="state"
+              sortable={true}
+              filter={true}
               header={
                 <span className="text-gray-500 text-sm font-normal">State</span>
               }
@@ -313,7 +293,8 @@ const AddNewLocation = memo(({ isOpen, closeModal }: Props) => {
           {form.type === "county" && (
             <SelectLocation
               required={true}
-              placeholder="State"
+              label="State"
+              placeholder="Select state"
               className="top-0"
               name="location"
               value={form.location}

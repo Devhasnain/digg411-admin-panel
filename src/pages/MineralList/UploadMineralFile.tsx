@@ -6,6 +6,7 @@ import Label from "../../components/form/Label";
 
 const UploadMineralFile = () => {
   const [data, setData] = useState<any>([]);
+  console.log(data)
   return (
     <>
       {data?.length ? (
@@ -44,15 +45,23 @@ const UploadMineralFile = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <Label className="mb-0">Location</Label>
+                <Label className="mb-0">State</Label>
                 <div className="flex flex-row items-center justify-start gap-4">
-                  <span className="text-[14px]">{item?.location}</span>
+                  <span className="text-[14px]">{item?.state?.name} ({item?.state?.code})</span>
+                </div>
+              </div>
+              <div className="">
+                <Label className="mb-0">Counties</Label>
+                <div className="flex flex-col">
+                  {item?.counties?.map((county: string, id: number) => (
+                    <span key={id} className="text-[14px]">{county}</span>
+                  ))}
                 </div>
               </div>
               <div className="">
                 <Label className="mb-0">Address</Label>
                 <div className="flex flex-col">
-                  {item?.address?.map((adr: string, id: number) => (
+                  {item?.addresses?.map((adr: string, id: number) => (
                     <span key={id} className="text-[14px]">{adr}</span>
                   ))}
                 </div>

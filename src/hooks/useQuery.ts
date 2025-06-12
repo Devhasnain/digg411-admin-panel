@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import baseApi from "../config/api";
+import { store } from "../store";
 
-export const useQuery = (endpoint: string, token?: string,autoFetch: boolean = true) => {
+export const useQuery = (endpoint: string, token?: string | null,autoFetch: boolean = true) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
@@ -13,7 +14,7 @@ export const useQuery = (endpoint: string, token?: string,autoFetch: boolean = t
 
     try {
       const response = await baseApi.get(endpoint, {
-        headers: { Authorization: token ?? "" },
+        headers: { Authorization: token ?? store.getState().auth.token },
       });
 
       setData(response.data);

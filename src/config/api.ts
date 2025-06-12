@@ -2,7 +2,7 @@ import axios from "axios";
 
 const baseApi = axios.create({
   baseURL: process.env.NODE_ENV === "production" ? import.meta.env.VITE_API_URL : "http://localhost:3000/api",
-  timeout: 10000,
+  timeout: 20000,
   withCredentials:true,
   headers: {
     "Content-Type": "application/json",
@@ -43,6 +43,10 @@ export const endpoints = {
   getNewsLetters:"/admin/newsletter",
   getAnalytics:"/admin/analytics",
   updatePassword:"/admin/update-password",
+  addMineral:"/admin/mineral/add",
+  getMinerals:"/admin/mineral",
+  deleteMineral:"/admin/mineral/delete",
+  editMineral:"/admin/mineral/edit"
 }
 
 

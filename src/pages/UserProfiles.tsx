@@ -54,7 +54,17 @@ export default function UserProfiles() {
     async (e: any) => {
       try {
         e.preventDefault();
-        await request(form, null, token ?? "");
+        await request(
+          {
+            name: form?.name,
+            email: form?.email,
+            role: form?.role,
+            phone: form?.phone,
+            bio: form?.bio,
+          },
+          null,
+          token ?? ""
+        );
         dispatch(updateUser(form));
         setHaveChanges(false);
         toast.success("Profile updated.");
@@ -69,7 +79,7 @@ export default function UserProfiles() {
   useEffect(() => {
     if (user) {
       setForm({
-        name: user?.user ?? "",
+        name: user?.name ?? "",
         email: user?.email ?? "",
         phone: user?.phone ?? "",
         role: user?.role ?? "",

@@ -10,7 +10,8 @@ interface TextareaProps {
   error?: boolean; // Error state
   hint?: string; // Hint text to display
   name?:string;
-  required?:boolean
+  required?:boolean;
+  minLength?:number
 }
 
 const TextArea: React.FC<TextareaProps> = ({
@@ -23,7 +24,8 @@ const TextArea: React.FC<TextareaProps> = ({
   error = false, // Error state
   hint = "", // Default hint text
   name="",
-  required=false
+  required=false,
+  minLength
 }) => {
 
   let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className} `;
@@ -47,6 +49,7 @@ const TextArea: React.FC<TextareaProps> = ({
         className={textareaClasses}
         name={name}
         required={required}
+        minLength={minLength}
       />
       {hint && (
         <p

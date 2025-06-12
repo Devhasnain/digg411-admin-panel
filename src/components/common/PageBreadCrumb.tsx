@@ -4,8 +4,10 @@ import { ReactNode } from "react";
 
 interface BreadcrumbProps {
   pageTitle: string;
+  previousTitle?: string;
+  previousLink?: string;
   button?: boolean;
-  buttonTitle?:string;
+  buttonTitle?: string;
   buttonProps?: {
     size?: "sm" | "md"; // Button size
     variant?: "primary" | "outline"; // Button variant
@@ -22,7 +24,9 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
   pageTitle,
   button,
   buttonProps,
-  buttonTitle
+  buttonTitle,
+  previousTitle,
+  previousLink,
 }) => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -39,33 +43,35 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({
       ) : (
         <nav>
           <ol className="flex items-center gap-1.5">
-            <li>
-              <Link
-                className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
-                to="/"
-              >
-                Home
-                <svg
-                  className="stroke-current"
-                  width="17"
-                  height="16"
-                  viewBox="0 0 17 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+            <>
+              <li>
+                <Link
+                  className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
+                  to={previousLink ? previousLink : "/"}
                 >
-                  <path
-                    d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
-                    stroke=""
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
-            </li>
-            <li className="text-sm text-gray-800 dark:text-white/90">
-              {pageTitle}
-            </li>
+                  {previousTitle ? previousTitle : "Home"}
+                  <svg
+                    className="stroke-current"
+                    width="17"
+                    height="16"
+                    viewBox="0 0 17 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
+                      stroke=""
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              </li>
+              <li className="text-sm text-gray-800 dark:text-white/90">
+                {pageTitle}
+              </li>
+            </>
           </ol>
         </nav>
       )}

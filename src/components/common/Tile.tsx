@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 type Props = {
     children:React.ReactNode
@@ -12,4 +12,4 @@ const Tile = ({children}:Props) => {
   )
 }
 
-export default Tile
+export default memo(Tile)

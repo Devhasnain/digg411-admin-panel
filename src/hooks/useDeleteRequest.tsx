@@ -4,7 +4,7 @@ import { store } from "../store";
 
 type RequestProps = {
   path?: string | null;
-  token?: string;
+  token?: any;
 };
 
 export const useDeleteRequest = (endpoint?: string) => {
@@ -12,16 +12,14 @@ export const useDeleteRequest = (endpoint?: string) => {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
 
-  const request = async ({
-    path,
-    token = store.getState().auth.token ?? "",
-  }: RequestProps) => {
+  const request = async ({ path, token = null }: RequestProps) => {
     setLoading(true);
     setError(null);
 
     try {
+      console.log(store.getState()?.auth?.token);
       const response = await baseApi.delete(path ? path : endpoint ?? "", {
-        headers: { Authorization: token },
+        headers: { Authorization: token ?? store.getState()?.auth?.token },
       });
       setData(response.data);
       return response.data;

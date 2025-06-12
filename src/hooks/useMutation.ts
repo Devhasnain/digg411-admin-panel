@@ -1,7 +1,7 @@
 import { useState } from "react";
 import baseApi from "../config/api";
 
-export const useMutation = (endpoint: string) => {
+export const useMutation = (endpoint?: string) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
@@ -11,7 +11,7 @@ export const useMutation = (endpoint: string) => {
     setError(null);
 
     try {
-      const response = await baseApi.post(path ? path : endpoint, payload, { headers: { Authorization: token } });
+      const response = await baseApi.post(path ? path : endpoint ? endpoint : "", payload, { headers: { Authorization: token } });
       setData(response.data);
       return response.data
     } catch (err: any) {

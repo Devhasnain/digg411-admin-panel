@@ -30,12 +30,18 @@ const FileDropZone = ({ setData }: Props) => {
           complete: (results) => {
             const parsedData = results.data.map((item: any) => ({
               ...item,
+              state: {
+                name: item?.state?.split(",")[0],
+                code: item?.state?.split(",")[1],
+              },
+              counties:
+                item?.counties?.split(",").map((e: string) => e.trim()) || [],
               emails:
                 item.emails?.split(",").map((e: string) => e.trim()) || [],
               numbers:
                 item.numbers?.split(",").map((n: string) => n.trim()) || [],
-              address:
-                item.address?.split(",").map((a: string) => a.trim()) || [],
+              addresses:
+                item.addresses?.split(",").map((a: string) => a.trim()) || [],
             }));
             setData(parsedData ?? []);
           },
@@ -54,11 +60,17 @@ const FileDropZone = ({ setData }: Props) => {
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
           const parsedData = jsonData.map((item: any) => ({
             ...item,
-            emails: item.emails?.split(",").map((e: string) => e.trim()) || [],
+            state: {
+              name: item?.state?.split(",")[0],
+              code: item?.state?.split(",")[1],
+            },
+            emails: item?.emails?.split(",").map((e: string) => e.trim()) || [],
+            counties:
+              item?.counties?.split(",").map((e: string) => e.trim()) || [],
             numbers:
               item.numbers?.split(",").map((n: string) => n.trim()) || [],
-            address:
-              item.address?.split(",").map((a: string) => a.trim()) || [],
+            addresses:
+              item.addresses?.split(",").map((a: string) => a.trim()) || [],
           }));
           // console.log("XLSX parsed data:", parsedData);
           setData(parsedData ?? []);

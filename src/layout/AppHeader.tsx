@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
@@ -125,4 +125,4 @@ const AppHeader: React.FC = () => {
   );
 };
 
-export default AppHeader;
+export default memo(AppHeader);

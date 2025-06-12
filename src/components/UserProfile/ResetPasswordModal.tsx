@@ -64,7 +64,7 @@ const ResetPasswordModal = () => {
                 id="currentPassword"
                 name="currentPassword"
                 type="text"
-                placeholder="••••••••"
+                placeholder="Current Password"
                 min={6}
                 value={form.currentPassword}
                 required
