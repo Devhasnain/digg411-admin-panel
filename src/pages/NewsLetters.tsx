@@ -93,7 +93,7 @@ export default function NewsLetters() {
           className="text-xl font-semibold text-gray-800 dark:text-white/90"
           x-text="pageName"
         >
-          Contact
+          Newsletters
         </h2>
         <ol className="flex items-center gap-4">
           <li>

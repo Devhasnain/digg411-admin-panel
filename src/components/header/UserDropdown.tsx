@@ -31,7 +31,7 @@ export default function UserDropdown() {
             user?.picture ?
             <img src={user?.picture} className="object-cover" alt="User" />
             :
-            <span>{user?.name[0]?.toUpperCase()}</span>
+            <span>{user?.name ? user?.name[0]?.toUpperCase() : "Un"}</span>
           }
         </span>
 
