@@ -1,5 +1,6 @@
 import { useState } from "react";
 import baseApi from "../config/api";
+import { store } from "../store";
 
 export const useMutation = (endpoint?: string) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -11,7 +12,7 @@ export const useMutation = (endpoint?: string) => {
     setError(null);
 
     try {
-      const response = await baseApi.post(path ? path : endpoint ? endpoint : "", payload, { headers: { Authorization: token } });
+      const response = await baseApi.post(path ? path : endpoint ? endpoint : "", payload, { headers: { Authorization: token ?? store.getState()?.auth?.token } });
       setData(response.data);
       return response.data
     } catch (err: any) {

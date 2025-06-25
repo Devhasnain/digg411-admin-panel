@@ -11,13 +11,13 @@ interface InputProps {
   className?: string;
   min?: number | 0;
   max?: number | 0;
-  step?: number;
+  step?: any;
   disabled?: boolean;
   success?: boolean;
   error?: boolean;
   hint?: string;
   required?: boolean | false;
-  autoComplete?:string
+  autoComplete?:string;
 }
 
 const Input: FC<InputProps> = ({

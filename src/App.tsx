@@ -30,6 +30,8 @@ import AddMineral from "./pages/MineralList/AddMineral";
 import Locations from "./pages/Locations";
 import MineralDetail from "./pages/MineralList/MineralDetail";
 import EditMineral from "./pages/MineralList/EditMineral";
+import Plans from "./pages/Plans";
+import AddEditPlan from "./pages/Plans/AddEditPlan";
 
 export default function App() {
   return (
@@ -55,6 +57,9 @@ export default function App() {
             <Route path="/add-mineral" element={<AddMineral />} />
             <Route path="/edit-mineral/:id" element={<EditMineral />} />
             <Route path="/locations" element={<Locations />} />
+            <Route path="/plans" element={<Plans />} />
+            <Route path="/plans/create" element={<AddEditPlan/>} />
+            <Route path="/plans/:id" element={<AddEditPlan/>} />
 
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />

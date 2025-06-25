@@ -13,6 +13,7 @@ import contactSlice from './slices/contactSlice';
 import newsLettersSlice from './slices/newsLettersSlice';
 import dashboardSlice from './slices/dashboardSlice';
 import mineralsSlice from './slices/mineralsSlice';
+import planSlice from './slices/planSlice';
 
 
 const rootReducer = combineReducers({
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   contacts:contactSlice,
   newsletters:newsLettersSlice,
   dashboard:dashboardSlice,
-  minerals:mineralsSlice
+  minerals:mineralsSlice,
+  plan:planSlice
 });
 
 const persistConfig = {

@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
+  BoltIcon,
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
@@ -61,6 +62,11 @@ const navItems: NavItem[] = [
     icon: <MapPinIcon />,
     name: "Locations",
     path: "/locations",
+  },
+  {
+    icon: <BoltIcon/>,
+    name: "Plans",
+    path: "/plans",
   },
   // {
   //   name: "Forms",

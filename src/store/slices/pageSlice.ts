@@ -18,6 +18,7 @@ const pagesSlice = createSlice({
     state.pages = [...state.pages,action.payload];
    },
    updatePage:(state,action)=>{
+    console.log(action.payload)
     state.pages.map((item)=>{
       if(item._id === action.payload._id){
         return action.payload

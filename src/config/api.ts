@@ -46,7 +46,11 @@ export const endpoints = {
   addMineral:"/admin/mineral/add",
   getMinerals:"/admin/mineral",
   deleteMineral:"/admin/mineral/delete",
-  editMineral:"/admin/mineral/edit"
+  editMineral:"/admin/mineral/edit",
+  getPlans:"/admin/plan",
+  createPlan:"/admin/plan/create",
+  deletePlan:"/admin/plan/delete",
+  editPlan:"/admin/plan/edit",
 }
 
 

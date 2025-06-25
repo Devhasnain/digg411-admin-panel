@@ -1,4 +1,10 @@
-import { FormEvent, Suspense, useCallback, useEffect, useState } from "react";
+import {
+  FormEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Tile from "../../components/common/Tile";
@@ -17,48 +23,57 @@ const TermsAndConditions = () => {
   const pages = useSelector(getPages);
   const currentPage = pages.find((item) => item.slug === "terms");
   const dispatch = useDispatch();
-  const { data, loading, error } = useQuery(
+
+  const { data } = useQuery(
     `${endpoints.getPage}?slug=terms`,
     "",
     !currentPage
   );
 
   useEffect(() => {
-    if (data) {
-      dispatch(setPage(data?.page ?? {}));
+    if (data?.page) {
+      dispatch(setPage(data.page));
     }
   }, [data, dispatch]);
+
   return (
     <>
       <PageMeta title="Terms & Conditions |" description="" />
       <PageBreadcrumb pageTitle="Terms & Conditions" />
       <Tile>
-        <Suspense fallback="Loading">
-        <PageEditor currentPage={currentPage} />
-        </Suspense>
+        {currentPage ? (
+          <PageEditor currentPage={currentPage} />
+        ) : (
+          <p className="p-4 text-sm">Loading...</p>
+        )}
       </Tile>
     </>
   );
 };
 
 type PageEditorProps = {
-  currentPage: any;
+  currentPage: {
+    _id: string;
+    content: string;
+    [key: string]: any;
+  };
 };
 
-const PageEditor = ({ currentPage }: PageEditorProps) => {
+const PageEditor = memo(({ currentPage }: PageEditorProps) => {
   const dispatch = useDispatch();
   const token = useSelector(getToken);
-  const [text, setText] = useState<any>(currentPage?.content);
+  const [text, setText] = useState(currentPage.content || "");
   const { loading, request } = useMutation(`${endpoints.updatePage}`);
+
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
+      e.preventDefault();
       try {
-        e.preventDefault();
         const payload = {
           title: "Terms & Conditions",
           slug: "terms",
           content: text,
-          id: currentPage?._id,
+          id: currentPage._id,
         };
         await request(payload, null, token ?? "");
         dispatch(updatePage({ ...currentPage, content: text }));
@@ -67,25 +82,36 @@ const PageEditor = ({ currentPage }: PageEditorProps) => {
         toast.error(GetApiErrorMessage(error));
       }
     },
-    [text]
+    [text, currentPage, dispatch, request, token]
   );
 
+  // Passive event for smoother scroll behavior (this part is okay)
   useEffect(() => {
-    if (currentPage) {
-      setText(currentPage?.content);
+    const handler = (e: TouchEvent) => {};
+    window.addEventListener("touchstart", handler, { passive: true });
+    return () => window.removeEventListener("touchstart", handler);
+  }, []);
+
+  // Only update text if it changes externally
+  useEffect(() => {
+    if (currentPage?.content) {
+      setText(currentPage.content);
     }
-  }, [currentPage]);
+  }, [currentPage?.content]);
+
   return (
     <form onSubmit={handleOnSubmit} className="relative">
+      {/* Hidden input for HTML5 form validation (not really needed if not using native validation) */}
       <input
         type="text"
-        className="absolute !opacity-0 top-10 left-3"
-        required={true}
+        className="absolute opacity-0 pointer-events-none"
+        required
         value={text}
+        readOnly
       />
       <Editor
         value={text}
-        onTextChange={(e) => setText(e.htmlValue)}
+        onTextChange={(e) => setText(e.htmlValue??"")}
         className="h-[70vh]"
       />
       <Button
@@ -99,6 +125,6 @@ const PageEditor = ({ currentPage }: PageEditorProps) => {
       </Button>
     </form>
   );
-};
+});
 
 export default TermsAndConditions;
