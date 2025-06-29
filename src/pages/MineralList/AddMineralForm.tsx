@@ -77,21 +77,19 @@ const AddMineralForm = () => {
         },
       };
 
-      console.log(payload)
-
-      // toast.promise(request(payload, endpoints.addMineral, token ?? ""), {
-      //   loading: "Submitting...",
-      //   success: (res) => {
-      //     dispatch(setMinerals(res.data));
-      //     setFormArray(initialArrayValues);
-      //     setFormInputs(initialInputValues);
-      //     return "Submitted successfully!";
-      //   },
-      //   error: (err) => {
-      //     console.error("Error:", err);
-      //     return "Submission failed!";
-      //   },
-      // });
+      toast.promise(request(payload, endpoints.addMineral, token ?? ""), {
+        loading: "Submitting...",
+        success: (res) => {
+          dispatch(setMinerals(res.data));
+          setFormArray(initialArrayValues);
+          setFormInputs(initialInputValues);
+          return "Submitted successfully!";
+        },
+        error: (err) => {
+          console.error("Error:", err);
+          return "Submission failed!";
+        },
+      });
     },
     [formArray, formInputs]
   );
