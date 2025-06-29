@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Label } from "../../components/index";
 import { useQuery } from "../../hooks/useQuery";
 import { endpoints } from "../../config/api";
@@ -27,47 +27,55 @@ const SelectLocation = ({
   placeholder = "Location",
 }: Props) => {
   const [select, setSelect] = useState<any>(value);
-  const locations = useSelector(getLocations)
-    ?.filter((item) => item?.type === "state")
-    ?.map((item) => {
-      return { label: item?.name, value: item?.code };
-    });
   const token = useSelector(getToken) ?? "";
   const dispatch = useDispatch();
 
-  const filteredLocations = (inputValue: string) => {
-    return locations?.filter((item) =>
-      inputValue?.trim()?.length
-        ? item?.label?.toLowerCase()?.includes(inputValue?.toLowerCase())
-        : true
-    );
-  };
+  const rawLocations = useSelector(getLocations);
+  const locations = useMemo(
+    () =>
+      rawLocations
+        ?.filter((item) => item?.type === "state")
+        ?.map((item) => ({
+          label: item?.name,
+          value: item?.code,
+        })) ?? [],
+    [rawLocations]
+  );
 
-  const promiseOptions = useCallback(
-    (inputValue: string) =>
-      new Promise<any[]>((resolve) => {
-        setTimeout(() => {
-          resolve(filteredLocations(inputValue));
-        }, 1000);
-      }),
+  const filteredLocations = useCallback(
+    (inputValue: string) => {
+      return locations.filter((item) =>
+        inputValue?.trim()
+          ? item.label.toLowerCase().includes(inputValue.toLowerCase())
+          : true
+      );
+    },
     [locations]
   );
 
   const { request, data, error, loading } = useQuery(
     endpoints.getLocations,
     token,
-    !locations.length
+    !rawLocations?.length
+  );
+
+  const promiseOptions = useCallback(
+    (inputValue: string) =>
+      new Promise<any[]>((resolve) => {
+        resolve(filteredLocations(inputValue));
+      }),
+    [filteredLocations]
   );
 
   useEffect(() => {
-    if (data) {
-      dispatch(setLocations(data?.locations));
+    if (data?.locations?.length) {
+      dispatch(setLocations(data.locations));
     }
-  }, [data, locations]);
+  }, [data, dispatch]);
 
   useEffect(() => {
     if (select?.value && name) {
-      onChange({ target: { name, value: select, test: select } });
+      onChange({ target: { name, value: select } });
     }
   }, [select]);
 
@@ -89,21 +97,19 @@ const SelectLocation = ({
           onChange={(e) => setSelect(e)}
           cacheOptions
           required={required}
-          defaultOptions
+          defaultOptions={locations}
           isLoading={loading}
           loadOptions={promiseOptions}
         />
         {!locations?.length ? (
           <ArrowPathIcon
             onClick={request}
-            className={`cursor-pointer ${loading && "animate-spin"}`}
+            className={`cursor-pointer ${loading ? "animate-spin" : ""}`}
             height={20}
             width={20}
             color="gray"
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
       </div>
     </div>
   );
