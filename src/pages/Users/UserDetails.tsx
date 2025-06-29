@@ -81,7 +81,7 @@ export default function UserDetails() {
         permissions: user?.permissions ?? initialValues.permissions,
       });
     }
-  }, [data]);
+  }, [data, id]);
 
   return (
     <>
