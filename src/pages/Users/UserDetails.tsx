@@ -73,12 +73,12 @@ export default function UserDetails() {
     if (data?.user) {
       setUser(data?.user);
       setForm({
-        name: user?.name,
-        email: user?.email,
-        phone: user?.phone,
-        bio: user?.bio,
-        role: user?.role,
-        permissions: user?.permissions ?? initialValues.permissions,
+        name: data?.user?.name,
+        email: data?.user?.email,
+        phone: data?.user?.phone,
+        bio: data?.user?.bio,
+        role: data?.user?.role,
+        permissions: data?.user?.permissions ?? initialValues.permissions,
       });
     }
   }, [data, id]);
