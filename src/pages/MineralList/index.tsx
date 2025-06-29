@@ -97,15 +97,14 @@ export default function MineralList() {
           value={mineralsList ?? []}
           paginator
           rows={5}
-          dataKey="id"
           loading={loading}
-          globalFilterFields={["name", "email", "phone"]}
+          globalFilterFields={["name", "emails", "numbers","state"]}
           header={renderHeader}
           emptyMessage="No contacts found!"
           globalFilter={globalFilter}
           className="!bg-transparent min-w-[1000px]"
           scrollable={true}
-          rowsPerPageOptions={[5, 10, 20, 30, 40, 50, 100]}
+          rowsPerPageOptions={[10, 20, 40, 100]}
           paginatorDropdownAppendTo={"self"}
         >
           <Column
@@ -144,7 +143,7 @@ export default function MineralList() {
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.numbers[0] }
+                {rowData?.numbers[0]}
               </span>
             )}
             style={{ minWidth: "14rem" }}

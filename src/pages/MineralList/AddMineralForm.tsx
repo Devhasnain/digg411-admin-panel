@@ -18,7 +18,7 @@ import { useMutation } from "../../hooks/useMutation";
 import toast from "react-hot-toast";
 import { endpoints } from "../../config/api";
 import { getToken } from "../../store/slices/authSlice";
-import { setMinerals } from "../../store/slices/mineralsSlice";
+import { addMineral, setMinerals } from "../../store/slices/mineralsSlice";
 
 let initialInputValues = {
   name: "",
@@ -80,7 +80,7 @@ const AddMineralForm = () => {
       toast.promise(request(payload, endpoints.addMineral, token ?? ""), {
         loading: "Submitting...",
         success: (res) => {
-          dispatch(setMinerals(res.data));
+          dispatch(addMineral(res.data));
           setFormArray(initialArrayValues);
           setFormInputs(initialInputValues);
           return "Submitted successfully!";

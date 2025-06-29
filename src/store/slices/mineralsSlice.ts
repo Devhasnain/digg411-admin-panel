@@ -18,7 +18,7 @@ const mineralsSlice = createSlice({
       state.minerals = action.payload
     },
     addMineral:(state,action)=>{
-      state.minerals = [...state.minerals,action.payload]
+      state.minerals = [action.payload,...state.minerals]
     },
     updateMineral:(state,action)=>{
       state.minerals = state?.minerals?.map((item)=>{
