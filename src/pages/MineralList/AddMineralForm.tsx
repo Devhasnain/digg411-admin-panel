@@ -1,24 +1,20 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  memo,
-  useCallback,
-  useState,
-} from "react";
+import React, { ChangeEvent, FormEvent, memo, useCallback, useState, } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MultiSelect } from "primereact/multiselect";
+import toast from "react-hot-toast";
+
+import { addMineral, setMinerals } from "../../store/slices/mineralsSlice";
+import { getLocations } from "../../store/slices/locationsSlice";
 import TodoInput from "../../components/ui/todoInput/TodoInput";
+import TextArea from "../../components/form/input/TextArea";
 import Input from "../../components/form/input/InputField";
+import { getToken } from "../../store/slices/authSlice";
+import Button from "../../components/ui/button/Button";
+import { useMutation } from "../../hooks/useMutation";
 import Label from "../../components/form/Label";
 import SelectLocation from "./SelectLocation";
-import TextArea from "../../components/form/input/TextArea";
-import Button from "../../components/ui/button/Button";
-import { MultiSelect } from "primereact/multiselect";
-import { useDispatch, useSelector } from "react-redux";
-import { getLocations } from "../../store/slices/locationsSlice";
-import { useMutation } from "../../hooks/useMutation";
-import toast from "react-hot-toast";
 import { endpoints } from "../../config/api";
-import { getToken } from "../../store/slices/authSlice";
-import { addMineral, setMinerals } from "../../store/slices/mineralsSlice";
+
 
 let initialInputValues = {
   name: "",
@@ -28,6 +24,7 @@ let initialInputValues = {
   address: "",
   state: { label: "", value: "" },
   description: "",
+  city:""
 };
 
 let initialArrayValues = {
@@ -182,9 +179,19 @@ const AddMineralForm = () => {
       </div>
       <div className="grid grid-cols-2 gap-5">
         <div className="">
-          <Label htmlFor="zipcode">Zipcode</Label>
+          <Label htmlFor="city">City</Label>
           <Input
-            placeholder="Zipcode"
+            placeholder="City"
+            type="text"
+            name="city"
+            value={formInputs.city}
+            onChange={handleOnChange}
+          />
+        </div>
+         <div className="">
+          <Label htmlFor="zipcode">Zip code</Label>
+          <Input
+            placeholder="Zip code"
             type="number"
             name="zipcode"
             value={formInputs.zipcode}

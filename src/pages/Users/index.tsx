@@ -1,22 +1,24 @@
-import PageMeta from "../../components/common/PageMeta";
-import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser, getUsers, removeUser, setUsers } from "../../store/slices/usersSlice";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { useQuery } from "../../hooks/useQuery";
-import baseApi, { endpoints } from "../../config/api";
-import { getToken, getUser } from "../../store/slices/authSlice";
-import Button from "../../components/ui/button/Button";
-import { TableBody, TableCell, TableRow } from "../../components/ui/table";
-import { Plans } from "../../config/subscriptionPlans";
-import { Link } from "react-router";
-import AddUserModel from "../../components/UserProfile/AddUserModel";
-import { useModal } from "../../hooks/useModal";
 import { ArrowPathIcon, TrashIcon } from "@heroicons/react/24/outline";
-import IconButton from "../../components/ui/iconButton/IconButton";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { Link } from "react-router";
+
+import { addUser, getUsers, removeUser, setUsers } from "../../store/slices/usersSlice";
+import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
+import { TableBody, TableCell, TableRow } from "../../components/ui/table";
+import AddUserModel from "../../components/UserProfile/AddUserModel";
+import IconButton from "../../components/ui/iconButton/IconButton";
+import { getToken, getUser } from "../../store/slices/authSlice";
 import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
+import PageMeta from "../../components/common/PageMeta";
+import Button from "../../components/ui/button/Button";
+import { Plans } from "../../config/subscriptionPlans";
+import baseApi, { endpoints } from "../../config/api";
 import { useMutation } from "../../hooks/useMutation";
+import { useQuery } from "../../hooks/useQuery";
+import { useModal } from "../../hooks/useModal";
+
 
 const Customers = () => {
   const auth = useSelector(getUser);
@@ -94,7 +96,7 @@ const Customers = () => {
                 {user?.role?.slice(1)}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {getActivePlanName(user?.subscription?.priceId)}
+                {user?.subscription?.amount ?"$":"-"}{user?.subscription?.amount}
               </TableCell>
               <TableCell className="text-end px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                 {

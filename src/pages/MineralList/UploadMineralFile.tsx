@@ -1,12 +1,17 @@
-import { useState } from "react";
-import FileDropZone from "./FileDropZone";
+import { useCallback, useState } from "react";
+
 import Button from "../../components/ui/button/Button";
-import { TrashBinIcon } from "../../icons";
 import Label from "../../components/form/Label";
+import { TrashBinIcon } from "../../icons";
+import FileDropZone from "./FileDropZone";
+
 
 const UploadMineralFile = () => {
   const [data, setData] = useState<any>([]);
-  console.log(data)
+  const handleUpload = useCallback(()=>{
+    // const promise = 
+  },[data])
+  
   return (
     <>
       {data?.length ? (
@@ -15,7 +20,7 @@ const UploadMineralFile = () => {
             <Button onClick={()=>setData([])} size="sm" variant="outline">
               Clear
             </Button>
-            <Button disabled={!data?.length} size="sm">
+            <Button disabled={!data?.length} size="sm" onClick={handleUpload}>
               Save
             </Button>
           </div>
@@ -48,6 +53,12 @@ const UploadMineralFile = () => {
                 <Label className="mb-0">State</Label>
                 <div className="flex flex-row items-center justify-start gap-4">
                   <span className="text-[14px]">{item?.state?.name} ({item?.state?.code})</span>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <Label className="mb-0">City</Label>
+                <div className="flex flex-row items-center justify-start gap-4">
+                  <span className="text-[14px]">{item?.city}</span>
                 </div>
               </div>
               <div className="">
