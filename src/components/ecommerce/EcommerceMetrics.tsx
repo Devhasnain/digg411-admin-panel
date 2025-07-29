@@ -1,15 +1,14 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  BoxIconLine,
-  GroupIcon,
-} from "../../icons";
+import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, } from "../../icons";
 import Badge from "../ui/badge/Badge";
+
 
 type Props = {
   analytics: {
     totalUsers: number;
     totalCustomers: number;
+    totalSubscriptions: {
+      totalAmount: number;
+    }[];
   };
 };
 
@@ -73,7 +72,10 @@ export default function EcommerceMetrics({ analytics }: Props) {
               Subscriptions
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
+              {analytics.totalSubscriptions?.reduce(
+                (sum, item) => sum + item.totalAmount,
+                0
+              )}
             </h4>
           </div>
 

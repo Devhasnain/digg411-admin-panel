@@ -1,5 +1,6 @@
 import { memo, ReactNode } from "react";
 
+
 interface ButtonProps {
   children: ReactNode; // Button text or content
   size?: "sm" | "md"; // Button size
@@ -7,7 +8,7 @@ interface ButtonProps {
   startIcon?: ReactNode; // Icon before the text
   endIcon?: ReactNode; // Icon after the text
   onClick?: () => void; // Click handler
-  disabled?: boolean; // Disabled state
+  disabled?: any; // Disabled state
   className?: string; // Disabled state
   loading?: boolean;
   type?: "submit" | "reset" | "button" | undefined;
