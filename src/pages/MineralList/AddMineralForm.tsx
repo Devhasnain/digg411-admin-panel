@@ -28,6 +28,7 @@ let initialInputValues = {
 };
 
 let initialArrayValues = {
+  names:[],
   emails: [],
   numbers: [],
   addresses: [],
@@ -94,16 +95,19 @@ const AddMineralForm = () => {
   return (
     <form className="flex flex-col gap-4" onSubmit={handleOnSubmit}>
       <div className="grid grid-cols-2 gap-5">
-        <div className="">
-          <Label htmlFor="name">Name</Label>
-          <Input
-            placeholder="Name"
-            name="name"
-            id="name"
-            value={formInputs.name}
-            onChange={handleOnChange}
-          />
-        </div>
+       <TodoInput
+          type="text"
+          label="Name"
+          placeholder="Name"
+          fieldName="names"
+          name="name"
+          value={formInputs.name}
+          items={formArray.names}
+          onChange={handleOnChange}
+          addItem={handleOnChangeArray}
+          resetInput={handleResetInput}
+          removeItem={handleArrayRemoveItem}
+        />
         <TodoInput
           type="email"
           label="Email"

@@ -1,73 +1,52 @@
+import { ArrowPathIcon, EyeIcon, PencilSquareIcon, } from "@heroicons/react/24/outline";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-
-import {
-  ArrowPathIcon,
-  EyeIcon,
-  MagnifyingGlassIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
-import { useDispatch, useSelector } from "react-redux";
-
 import toast from "react-hot-toast";
-import { getToken } from "../../store/slices/authSlice";
-import { useQuery } from "../../hooks/useQuery";
-import { endpoints } from "../../config/api";
-import {
-  getMineralsList,
-  removeMineral,
-  setMinerals,
-} from "../../store/slices/mineralsSlice";
-import { Button, IconButton, Modal, PageMeta, Tile } from "../../components";
-import { TrashBinIcon } from "../../icons";
 import { Link } from "react-router";
-import { useModal } from "../../hooks/useModal";
+
+import { Button, IconButton, Modal, PageMeta, Tile } from "../../components";
+import { removeMineral } from "../../store/slices/mineralsSlice";
 import { useDeleteRequest } from "../../hooks/useDeleteRequest";
+import { getToken } from "../../store/slices/authSlice";
+import baseApi, { endpoints } from "../../config/api";
+import { useModal } from "../../hooks/useModal";
+import { TrashBinIcon } from "../../icons";
+
 
 export default function MineralList() {
-  const [globalFilter, setGlobalFilter] = useState("");
-  const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [rows, setRows] = useState(10);
+  const [mineralsList, setMineralsList] = useState([]);
+  const [total, setTotal] = useState(0);
   const token = useSelector(getToken);
-  const mineralsList = useSelector(getMineralsList);
-  const { request, data, loading } = useQuery(
-    endpoints.getMinerals,
-    token ?? "",
-    !mineralsList.length
-  );
+  const [loading, setLoading] = useState(false);
 
-  const renderHeader = () => {
-    return (
-      <div className="flex justify-end">
-        <form>
-          <div className="relative">
-            <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
-              <MagnifyingGlassIcon height={18} width={18} />
-            </span>
-            <input
-              //   ref={inputRef}
-              type="text"
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search or type command..."
-              className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm font-normal text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
-            />
-
-            <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-              <span> ⌘ </span>
-              <span> K </span>
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  };
+  const fetchMinerals = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await baseApi.get(
+        `${endpoints.getPaginatedMinerals}?page=${page}&limit=${rows}`,
+        {
+          headers: { Authorization: `${token}` },
+        }
+      );
+      setMineralsList(res.data?.minerals || []);
+      setTotal(res.data?.total || 0);
+    } catch (error) {
+      console.error("Error fetching minerals:", error);
+      toast.error("Failed to load minerals");
+      setLoading(false);
+      return;
+    } finally {
+      setLoading(false);
+    }
+  }, [page, rows, token]);
 
   useEffect(() => {
-    if (data?.minerals?.length) {
-      dispatch(setMinerals(data?.minerals));
-    }
-  }, [data?.minerals]);
+    fetchMinerals();
+  }, [page, rows, fetchMinerals]);
 
   return (
     <>
@@ -81,7 +60,7 @@ export default function MineralList() {
         </h2>
         <ol className="flex items-center gap-4">
           <li>
-            <IconButton onClick={request} loading={loading}>
+            <IconButton onClick={fetchMinerals} loading={loading}>
               <ArrowPathIcon
                 height={18}
                 width={18}
@@ -91,24 +70,29 @@ export default function MineralList() {
           </li>
         </ol>
       </div>
-      <Tile>
+      <Tile className="lg:!p-0">
         {/* <div className="w-full overflow-x-auto"> */}
         <DataTable
-          value={mineralsList ?? []}
+          value={mineralsList}
           paginator
-          rows={5}
+          rows={rows}
+          totalRecords={total}
+          first={(page - 1) * rows}
+          lazy
           loading={loading}
-          globalFilterFields={["name", "emails", "numbers","state"]}
-          header={renderHeader}
-          emptyMessage="No contacts found!"
-          globalFilter={globalFilter}
-          className="!bg-transparent min-w-[1000px]"
-          scrollable={true}
+          onPage={(e) => {
+            setPage((e.page ?? 0) + 1); // default page = 0
+            setRows(e.rows ?? rows); // keep old rows if undefined
+          }}
           rowsPerPageOptions={[10, 20, 40, 100]}
+          globalFilterFields={["names", "emails", "numbers", "state"]}
+          emptyMessage="No results found!"
+          className="!bg-transparent min-w-[1000px] min-h-[50vh] overflow-y-auto"
+          scrollable={true}
           paginatorDropdownAppendTo={"self"}
         >
           <Column
-            field="name"
+            field="names"
             filter={true}
             headerClassName="!bg-transparent !py-3"
             header={
@@ -116,13 +100,14 @@ export default function MineralList() {
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.name}
+                {rowData?.names[0] ?? "-"}
               </span>
             )}
             style={{ minWidth: "12rem" }}
           />
           <Column
             field="emails"
+            filter={true}
             headerClassName="!bg-transparent !py-3"
             header={
               <span className="text-gray-500 text-sm font-normal">Email</span>
@@ -130,7 +115,7 @@ export default function MineralList() {
             body={(rowData) => (
               <>
                 <span className="text-gray-500 text-sm font-normal">
-                  {rowData?.emails[0]}
+                  {rowData?.emails[0] ?? "-"}
                 </span>
               </>
             )}
@@ -138,12 +123,13 @@ export default function MineralList() {
           />
           <Column
             field="numbers"
+            filter={true}
             header={
               <span className="text-gray-500 text-sm font-normal">Number</span>
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.numbers[0]}
+                {rowData?.numbers[0] ?? "-"}
               </span>
             )}
             style={{ minWidth: "14rem" }}
@@ -151,12 +137,13 @@ export default function MineralList() {
           />
           <Column
             field="state"
+            filter={true}
             header={
               <span className="text-gray-500 text-sm font-normal">State</span>
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.state?.name}
+                {rowData?.state?.name ?? "-"}
               </span>
             )}
             style={{ minWidth: "12rem" }}
@@ -164,6 +151,7 @@ export default function MineralList() {
           />
           <Column
             field="addresses"
+            filter={true}
             header={
               <span className="text-gray-500 text-sm font-normal !line-clamp-2">
                 Address
@@ -171,7 +159,7 @@ export default function MineralList() {
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.addresses[0]}
+                {rowData?.addresses[0] ?? "-"}
               </span>
             )}
             style={{ minWidth: "8rem" }}

@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const baseApi = axios.create({
-  baseURL: process.env.NODE_ENV === "production" ? import.meta.env.VITE_API_URL : "http://localhost:3000/api",
+  baseURL: process.env.NODE_ENV === "production"? import.meta.env.VITE_API_URL: "http://localhost:3000/api",
   timeout: 20000,
   withCredentials:true,
   headers: {
@@ -45,7 +45,9 @@ export const endpoints = {
   getAnalytics:"/admin/analytics",
   updatePassword:"/admin/update-password",
   addMineral:"/admin/mineral/add",
+  uploadBulkMineral:"/admin/mineral/add-bulk",
   getMinerals:"/admin/mineral",
+  getPaginatedMinerals:"/admin/mineral/list",
   deleteMineral:"/admin/mineral/delete",
   editMineral:"/admin/mineral/edit",
   getPlans:"/admin/plan",

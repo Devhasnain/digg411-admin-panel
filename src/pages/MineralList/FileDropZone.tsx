@@ -1,5 +1,7 @@
 import Editor from "@monaco-editor/react";
 import toast from "react-hot-toast";
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
 import { z } from "zod";
 
 
@@ -42,7 +44,7 @@ const FileDropZone = () => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setUploading] = useState(false);
-  const { request } = useMutation();
+  const { request, loading} = useMutation();
 
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
@@ -63,41 +65,87 @@ const FileDropZone = () => {
     return errors.length < data.length; // at least one valid
   };
 
-  const onFileUpload = (e: File[]) => {
-    const file = e[0];
-    if (!file) return;
+  async function uploadInChunks(data: any[]) {
+  const chunks = chunkArray(data, 500);
 
-    setIsLoading(true);
+  for (let i = 0; i < chunks.length; i++) {
+    try {
+      console.log(`Uploading chunk ${i + 1} of ${chunks.length}...`);
+      await request({list:chunks[i] }, endpoints.uploadBulkMineral);
+    } catch (err) {
+      console.error(`Error uploading chunk ${i + 1}:`, err);
+      break; // or continue to skip failed chunks
+    }
+  }
+}
+
+
+const onFileUpload =async (files: File[]) => {
+  const file = files[0];
+  if (!file) {
+    toast.error("No file selected.");
+    return;
+  }
+
+  const fileExtension = file.name.split(".").pop()?.toLowerCase();
+  setIsLoading(true);
+
+  if (fileExtension === "csv") {
+    // Parse CSV using PapaParse
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete:async (results) => {
+      //  setData(results.data);
+      await uploadInChunks(results.data);
+        toast.success("CSV file parsed and uploaded successfully.");
+
+        setIsLoading(false);
+      },
+      error: () => {
+        toast.error("Failed to parse CSV file.");
+        setIsLoading(false);
+      }
+    });
+  } 
+  else if (fileExtension === "xlsx" || fileExtension === "xls") {
+    // Parse Excel using XLSX
     const reader = new FileReader();
-
-    reader.onload = (event) => {
+    reader.onload =async (event) => {
       try {
-        const content = event.target?.result as string;
-        const parsed = JSON.parse(content);
-        if (!Array.isArray(parsed)) throw new Error("JSON must be an array");
+        const data = event.target?.result as string;
+        const workbook = XLSX.read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        const hasAtLeastOneValid = validateData(parsed);
+      //  setData(jsonData);
+      await uploadInChunks(jsonData);
+        toast.success("Excel file parsed and uploaded successfully.");
 
-        if (!hasAtLeastOneValid) {
-          toast.error("No valid objects in the file.");
-          return;
-        }
-
-        setData(JSON.stringify(parsed, null, 2));
-      } catch (error) {
-        toast.error("Failed to parse JSON.");
+      } catch {
+        toast.error("Failed to parse Excel file.");
       } finally {
         setIsLoading(false);
       }
     };
-
-    reader.readAsText(file);
-  };
+    reader.readAsBinaryString(file);
+  } 
+  else {
+    toast.error("Unsupported file type. Please upload CSV or Excel.");
+    setIsLoading(false);
+  }
+};
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    disabled: loading,
+    multiple: false,
+    maxFiles: 1,
+    maxSize: 10 * 1024 * 1024,
     onDrop: onFileUpload,
     accept: {
-      "application/json": [],
+      "text/csv": [],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
     },
   });
 
@@ -127,7 +175,7 @@ const FileDropZone = () => {
         mineralsArray?.forEach(async (item: any) => {
           const result = mineralSchema.safeParse(item);
           if (result.success) {
-            await request({ ...result?.data }, endpoints.addMineral);
+            await request({ ...result?.data }, endpoints.uploadBulkMineral);
           }
         });
       }
@@ -212,6 +260,7 @@ const FileDropZone = () => {
           </form>
         </div>
       )}
+{/*       
       {data && (
         <>
           <Editor
@@ -240,7 +289,12 @@ const FileDropZone = () => {
           )}
 
           <div className="flex flex-row items-center gap-5 mt-5">
-            <Button size="sm" variant="outline" onClick={() => setData(null)} disabled={isUploading}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setData(null)}
+              disabled={isUploading}
+            >
               Clear
             </Button>
             <Button
@@ -253,8 +307,9 @@ const FileDropZone = () => {
             </Button>
           </div>
         </>
-      )}
-      <Panel
+      )} */}
+
+      {/* <Panel
         header="Valid JSON Object Format (Preview)"
         toggleable
         className="mt-5"
@@ -262,9 +317,21 @@ const FileDropZone = () => {
         <pre className="whitespace-pre-wrap bg-gray-100 p-3 rounded">
           {JSON.stringify(validObject, null, 2)}
         </pre>
-      </Panel>
+      </Panel> */}
     </div>
   );
 };
 
+
+
+function chunkArray<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
 export default FileDropZone;
+
+

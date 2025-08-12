@@ -1,9 +1,11 @@
-import { Link, useParams } from "react-router";
-import { Label, PageMeta, Tile } from "../../components";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import { endpoints } from "../../config/api";
-import { useQuery } from "../../hooks/useQuery";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { Link, useParams } from "react-router";
+
+import PageBreadcrumb from "../../components/common/PageBreadCrumb";
+import { Label, PageMeta, Tile } from "../../components";
+import { useQuery } from "../../hooks/useQuery";
+import { endpoints } from "../../config/api";
+
 
 const MineralDetail = () => {
   const { id } = useParams();
@@ -33,10 +35,15 @@ const MineralDetail = () => {
             <div className="flex flex-col gap-3">
               <div className="">
                 <Label className="mb-0">Name</Label>
-                <div className="flex flex-row items-center justify-start gap-x-4 gap-y-1">
-                  <span className="text-[14px] text-gray-600 dark:text-gray-500">
-                    {data?.mineral?.name}
-                  </span>
+               <div className="flex flex-row items-center justify-start flex-wrap gap-x-4 gap-y-1">
+                  {data?.mineral?.names?.map((name: string, id: number) => (
+                    <span
+                      key={id}
+                      className="text-[14px] text-gray-600 dark:text-gray-500"
+                    >
+                      {name}
+                    </span>
+                  ))}
                 </div>
               </div>
               <div className="">

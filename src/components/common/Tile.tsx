@@ -1,12 +1,14 @@
-import React, { memo } from 'react'
+import React, { memo } from 'react';
+
 
 type Props = {
-    children:React.ReactNode
+    children:React.ReactNode,
+    className?: string
 }
 
-const Tile = ({children}:Props) => {
+const Tile = ({children, className}:Props) => {
   return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
+      <div className={`rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6`}>
         {children}
       </div>
   )

@@ -1,31 +1,24 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import TodoInput from "../../components/ui/todoInput/TodoInput";
-import Input from "../../components/form/input/InputField";
-import Label from "../../components/form/Label";
-import SelectLocation from "./SelectLocation";
-import TextArea from "../../components/form/input/TextArea";
-import Button from "../../components/ui/button/Button";
-import { MultiSelect } from "primereact/multiselect";
-import { useDispatch, useSelector } from "react-redux";
-import { getLocations } from "../../store/slices/locationsSlice";
-import { useMutation } from "../../hooks/useMutation";
-import toast from "react-hot-toast";
-import { endpoints } from "../../config/api";
-import { getToken } from "../../store/slices/authSlice";
-import { setMinerals, updateMineral } from "../../store/slices/mineralsSlice";
-import { PageMeta, Tile } from "../../components";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import { useParams } from "react-router";
-import { useQuery } from "../../hooks/useQuery";
+import React, { ChangeEvent, FormEvent, memo, useCallback, useEffect, useState, } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useDispatch, useSelector } from "react-redux";
+import { MultiSelect } from "primereact/multiselect";
+import { useParams } from "react-router";
+import toast from "react-hot-toast";
+
+import PageBreadcrumb from "../../components/common/PageBreadCrumb";
+import { updateMineral } from "../../store/slices/mineralsSlice";
+import { getLocations } from "../../store/slices/locationsSlice";
+import TodoInput from "../../components/ui/todoInput/TodoInput";
+import TextArea from "../../components/form/input/TextArea";
 import { useMutationPut } from "../../hooks/useMutationPut";
+import Input from "../../components/form/input/InputField";
+import Button from "../../components/ui/button/Button";
+import { PageMeta, Tile } from "../../components";
+import Label from "../../components/form/Label";
+import { useQuery } from "../../hooks/useQuery";
+import SelectLocation from "./SelectLocation";
+import { endpoints } from "../../config/api";
+
 
 let initialInputValues = {
   name: "",
@@ -38,6 +31,7 @@ let initialInputValues = {
 };
 
 let initialArrayValues = {
+  names: [],
   emails: [],
   numbers: [],
   addresses: [],
@@ -113,12 +107,12 @@ const EditMineral = () => {
       const data = getMineralDetails?.data?.mineral;
       setFormInputs({
         ...initialInputValues,
-        name: data?.name,
         zipcode: data?.zipcode,
         state: { label: data?.state?.name, value: data?.state?.code },
         description: data?.description,
       });
       setFormArray({
+        names: data?.names,
         emails: data?.emails ?? [],
         numbers: data?.numbers ?? [],
         counties: data?.counties ?? [],
@@ -147,16 +141,19 @@ const EditMineral = () => {
             </div>
           )}
           <div className="grid grid-cols-2 gap-5">
-            <div className="">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                placeholder="Name"
-                name="name"
-                id="name"
-                value={formInputs.name}
-                onChange={handleOnChange}
-              />
-            </div>
+            <TodoInput
+              type="texr"
+              label="Name"
+              placeholder="Name"
+              fieldName="names"
+              name="name"
+              value={formInputs.name}
+              items={formArray.names}
+              onChange={handleOnChange}
+              addItem={handleOnChangeArray}
+              resetInput={handleResetInput}
+              removeItem={handleArrayRemoveItem}
+            />
             <TodoInput
               type="email"
               label="Email"
