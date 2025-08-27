@@ -94,6 +94,11 @@ const Plans = () => {
                   <h1 className="font-medium text-lg">{item?.title}</h1>
                   <h2 className="font-medium text-3xl">${item?.amount}</h2>
                   <h3 className="font-medium text-md">{item?.subtitle}</h3>
+                  {item?.downloadLimit && (
+                    <h4 className="font-medium text-sm text-gray-600 dark:text-gray-400">
+                      Download Limit: {item?.downloadLimit}
+                    </h4>
+                  )}
                 </div>
                 <h3 className="font-medium text-md mt-3 text-gray-500">
                   Features

@@ -25,6 +25,7 @@ let initialValues = {
   feature: "",
   features: [],
   amount: "",
+  downloadLimit: "",
 };
 const AddEditPlan = () => {
   const params = useParams();
@@ -52,17 +53,24 @@ const AddEditPlan = () => {
             ...formData,
             planId,
             amount: parseFloat(Number(formData.amount).toFixed(2)),
+            downloadLimit: parseInt(formData.downloadLimit) || 0,
+            download_limit: parseInt(formData.downloadLimit) || 0, // Try both camelCase and snake_case
           };
+          console.log("Sending payload to backend:", payload);
           let res = await updateApi.request(payload);
+          console.log("Backend response:", res);
           dispatch(updatePlan(res?.data));
-          console.log(res);
           toast.success("Plan updated successfully.");
         } else {
           let payload = {
             ...formData,
             amount: parseFloat(Number(formData.amount).toFixed(2)),
+            downloadLimit: parseInt(formData.downloadLimit) || 0,
+            download_limit: parseInt(formData.downloadLimit) || 0, // Try both camelCase and snake_case
           };
+          console.log("Sending payload to backend:", payload);
           let res = await createApi.request(payload);
+          console.log("Backend response:", res);
           dispatch(addPlan(res?.data));
           toast.success("Plan created successfully.");
           setFormData(initialValues);
@@ -88,7 +96,8 @@ const AddEditPlan = () => {
         priceId: plan?.priceId ?? "",
         feature: "",
         features: plan?.features ?? [],
-        amount: plan?.amount ?? [],
+        amount: plan?.amount ?? "",
+        downloadLimit: plan?.downloadLimit ?? "",
       });
     }
   }, [getPlanApi.data]);
@@ -153,6 +162,7 @@ const AddEditPlan = () => {
               />
             </div>
 
+
             <div className="">
               <TodoInput
                 type="text"
@@ -178,6 +188,19 @@ const AddEditPlan = () => {
                     [e.fieldName]: e.value,
                   }));
                 }}
+              />
+            </div>
+            <div className="">
+              <Label>Download Limit</Label>
+              <InputField
+                min={0}
+                max={1000000}
+                required
+                name="downloadLimit"
+                value={formData.downloadLimit}
+                type="number"
+                onChange={handleChange}
+                placeholder="Enter download limit (e.g., 1000)"
               />
             </div>
           </div>
