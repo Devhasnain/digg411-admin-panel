@@ -75,7 +75,7 @@ export default function EcommerceMetrics({ analytics }: Props) {
               {analytics.totalSubscriptions?.reduce(
                 (sum, item) => sum + item.totalAmount,
                 0
-              )}
+              )?.toFixed(2) || "0"}
             </h4>
           </div>
 

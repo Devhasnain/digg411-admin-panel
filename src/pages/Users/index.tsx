@@ -96,7 +96,7 @@ const Customers = () => {
                 {user?.role?.slice(1)}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {user?.subscription?.amount ?"$":"-"}{user?.subscription?.amount}
+                {user?.subscription?.amount ?"$":"-"}{user?.subscription?.amount?  (user?.subscription?.amount / 100).toFixed(2) : ""}
               </TableCell>
               <TableCell className="text-end px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                 {
