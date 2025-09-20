@@ -1,18 +1,15 @@
-import { SidebarProvider, useSidebar } from "../context/SidebarContext";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router";
+import { useCallback, useEffect } from "react";
+import toast from "react-hot-toast";
+
+import { getToken, getUser, resetAuth, setUser, } from "../store/slices/authSlice";
+import { SidebarProvider, useSidebar } from "../context/SidebarContext";
+import baseApi, { endpoints, UserTypes } from "../config/api";
+import AppSidebar from "./AppSidebar";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
-import AppSidebar from "./AppSidebar";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getToken,
-  getUser,
-  resetAuth,
-  setUser,
-} from "../store/slices/authSlice";
-import { useCallback, useEffect } from "react";
-import baseApi, { endpoints, UserTypes } from "../config/api";
-import toast from "react-hot-toast";
+
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -52,7 +49,7 @@ const LayoutContent: React.FC = () => {
   }, [user, token]);
 
   return (
-    <div className="min-h-screen xl:flex">
+    <div className="min-h-screen xl:flex overflow-x-hidden">
       <div>
         <AppSidebar />
         <Backdrop />
@@ -63,7 +60,7 @@ const LayoutContent: React.FC = () => {
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 overflow-x-hidden">
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-5 overflow-x-hidden">
           {user && <Outlet />}
         </div>
       </div>

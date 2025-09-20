@@ -2,6 +2,7 @@ import { ArrowPathIcon, EyeIcon, PencilSquareIcon, } from "@heroicons/react/24/o
 import { memo, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DataTable } from "primereact/datatable";
+import { Dropdown } from "primereact/dropdown";
 import { Column } from "primereact/column";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
@@ -35,7 +36,6 @@ export default function MineralList() {
       setMineralsList(res.data?.minerals || []);
       setTotal(res.data?.total || 0);
     } catch (error) {
-      console.error("Error fetching minerals:", error);
       toast.error("Failed to load minerals");
       setLoading(false);
       return;
@@ -70,8 +70,7 @@ export default function MineralList() {
           </li>
         </ol>
       </div>
-      <Tile className="lg:!p-0">
-        {/* <div className="w-full overflow-x-auto"> */}
+      <Tile className="lg:!p-0 w-full">
         <DataTable
           value={mineralsList}
           paginator
@@ -85,10 +84,18 @@ export default function MineralList() {
             setRows(e.rows ?? rows); // keep old rows if undefined
           }}
           rowsPerPageOptions={[10, 20, 40, 100]}
-          globalFilterFields={["names", "emails", "numbers", "state"]}
+          globalFilterFields={[
+            "names",
+            "emails",
+            "numbers",
+            "state",
+            "counties",
+            "addresses",
+            "",
+          ]}
           emptyMessage="No results found!"
-          className="!bg-transparent min-w-[1000px] min-h-[50vh] overflow-y-auto"
           scrollable={true}
+          scrollHeight="65vh" // 👈 makes table body scrollable
           paginatorDropdownAppendTo={"self"}
         >
           <Column
@@ -99,7 +106,7 @@ export default function MineralList() {
               <span className="text-gray-500 text-sm font-normal">Name</span>
             }
             body={(rowData) => (
-              <span className="text-gray-500 text-sm font-normal">
+              <span className="text-gray-500 text-sm font-normal line-clamp-2">
                 {rowData?.names[0] ?? "-"}
               </span>
             )}
@@ -150,6 +157,29 @@ export default function MineralList() {
             headerClassName="!bg-transparent !py-3"
           />
           <Column
+            field="counties"
+            header={
+              <span className="text-gray-500 text-sm font-normal">
+                Counties
+              </span>
+            }
+            body={(rowData) => (
+              <Dropdown
+                value={rowData?.counties?.length ? rowData?.counties[0] : ""}
+                options={rowData?.counties}
+                className="w-[10rem] !text-sm"
+                pt={{
+                  // root: { className: "h-8 text-sm" },
+                  input: { className: "text-sm py-1" },
+                }}
+              />
+              // <span className="text-gray-500 text-sm font-normal">
+              //   {rowData?.state?.name}
+              // </span>
+            )}
+            style={{ minWidth: "12rem" }}
+          />
+          <Column
             field="addresses"
             filter={true}
             header={
@@ -158,11 +188,11 @@ export default function MineralList() {
               </span>
             }
             body={(rowData) => (
-              <span className="text-gray-500 text-sm font-normal">
+              <span className="text-gray-500 text-sm font-normal line-clamp-2">
                 {rowData?.addresses[0] ?? "-"}
               </span>
             )}
-            style={{ minWidth: "8rem" }}
+            style={{ minWidth: "12rem" }}
             headerClassName="!bg-transparent !py-3"
           />
           <Column

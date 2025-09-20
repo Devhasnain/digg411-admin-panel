@@ -1,44 +1,23 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  ArrowPathIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/24/outline";
-import {
-  Button,
-  Tile,
-  InputField as Input,
-  Label,
-  Select,
-  PageMeta,
-  IconButton,
-  Modal,
-} from "../components/index";
-import { useModal } from "../hooks/useModal";
-import toast from "react-hot-toast";
-import GetApiErrorMessage from "../utils/GetApiErrorMessage";
+import { ChangeEvent, FormEvent, memo, useCallback, useEffect, useState, } from "react";
+import { ArrowPathIcon, MagnifyingGlassIcon, } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { useMutation } from "../hooks/useMutation";
-import { endpoints } from "../config/api";
-import { getToken } from "../store/slices/authSlice";
 import { DataTable } from "primereact/datatable";
+import { Dropdown } from "primereact/dropdown";
 import { Column } from "primereact/column";
-import { useQuery } from "../hooks/useQuery";
-import {
-  addLocation,
-  deleteLocation,
-  getLocations,
-  setLocations,
-} from "../store/slices/locationsSlice";
-import SelectLocation from "./MineralList/SelectLocation";
-import { TrashBinIcon } from "../icons";
+import toast from "react-hot-toast";
+
+import { Button, Tile, InputField as Input, Label, Select, PageMeta, IconButton, Modal, } from "../components/index";
+import { addLocation, deleteLocation, getLocations, setLocations, } from "../store/slices/locationsSlice";
+import GetApiErrorMessage from "../utils/GetApiErrorMessage";
 import { useDeleteRequest } from "../hooks/useDeleteRequest";
+import SelectLocation from "./MineralList/SelectLocation";
+import { getToken } from "../store/slices/authSlice";
+import { useMutation } from "../hooks/useMutation";
+import { useQuery } from "../hooks/useQuery";
+import { useModal } from "../hooks/useModal";
+import { endpoints } from "../config/api";
+import { TrashBinIcon } from "../icons";
+
 
 const Locations = () => {
   const dispatch = useDispatch();
@@ -166,7 +145,7 @@ const Locations = () => {
               }
               body={(rowData) => (
                 <span className="text-gray-500 text-sm font-normal">
-                  {rowData?.state?.name}
+                  {rowData?.state?.name ?? "-"}
                 </span>
               )}
               style={{ minWidth: "12rem" }}
