@@ -1,37 +1,28 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
-import SignIn from "./pages/AuthPages/SignIn";
+
+import TermsAndConditions from "./pages/OtherPage/TermsAndConditions";
+import MineralDetail from "./pages/MineralList/MineralDetail";
+import ForgetPassword from "./pages/AuthPages/ForgetPassword";
+import { ScrollToTop } from "./components/common/ScrollToTop";
+import PrivacyPolicy from "./pages/OtherPage/PrivacyPolicy";
+import EditMineral from "./pages/MineralList/EditMineral";
+import AddMineral from "./pages/MineralList/AddMineral";
+import UserDetails from "./pages/Users/UserDetails";
+import AddEditPlan from "./pages/Plans/AddEditPlan";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
-import Badges from "./pages/UiElements/Badges";
-import Avatars from "./pages/UiElements/Avatars";
-import Buttons from "./pages/UiElements/Buttons";
-import LineChart from "./pages/Charts/LineChart";
-import BarChart from "./pages/Charts/BarChart";
-import Calendar from "./pages/Calendar";
-import BasicTables from "./pages/Tables/BasicTables";
-import FormElements from "./pages/Forms/FormElements";
-import Blank from "./pages/Blank";
-import AppLayout from "./layout/AppLayout";
-import { ScrollToTop } from "./components/common/ScrollToTop";
-import Home from "./pages/Dashboard/Home";
-import ForgetPassword from "./pages/AuthPages/ForgetPassword";
-import Customers from "./pages/Users";
-import UserDetails from "./pages/Users/UserDetails";
-import Faqs from "./pages/OtherPage/Faqs";
-import TermsAndConditions from "./pages/OtherPage/TermsAndConditions";
-import PrivacyPolicy from "./pages/OtherPage/PrivacyPolicy";
-import Contact from "./pages/Contact";
+import SignIn from "./pages/AuthPages/SignIn";
 import NewsLetters from "./pages/NewsLetters";
 import MineralList from "./pages/MineralList";
-import AddMineral from "./pages/MineralList/AddMineral";
+import AppLayout from "./layout/AppLayout";
 import Locations from "./pages/Locations";
-import MineralDetail from "./pages/MineralList/MineralDetail";
-import EditMineral from "./pages/MineralList/EditMineral";
+import Home from "./pages/Dashboard/Home";
+import Faqs from "./pages/OtherPage/Faqs";
+import Customers from "./pages/Users";
+import Contact from "./pages/Contact";
 import Plans from "./pages/Plans";
-import AddEditPlan from "./pages/Plans/AddEditPlan";
+import Blank from "./pages/Blank";
+
 
 export default function App() {
   return (
@@ -39,11 +30,9 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
 
-            {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/users" element={<Customers />} />
             <Route path="/user/:id" element={<UserDetails />} />
@@ -61,26 +50,7 @@ export default function App() {
             <Route path="/plans/create" element={<AddEditPlan/>} />
             <Route path="/plans/:id" element={<AddEditPlan/>} />
 
-            <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
-
-            {/* Forms */}
-            <Route path="/form-elements" element={<FormElements />} />
-
-            {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/avatars" element={<Avatars />} />
-            <Route path="/badge" element={<Badges />} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/videos" element={<Videos />} />
-
-            {/* Charts */}
-            <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} />
           </Route>
 
           {/* Auth Layout */}
