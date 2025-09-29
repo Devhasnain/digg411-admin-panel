@@ -25,6 +25,7 @@ export const endpoints = {
   lookup: "/auth/lookup",
   updateProfile:"/admin/update-profile",
   getUsers:"/admin/get-users",
+  getCustomers:"/admin/get-customers",
   getUser:"/admin/get-user",
   createUser:"/admin/create-user",
   getFaqs:"/admin/faq",

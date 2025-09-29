@@ -1,19 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import { persistStore, persistReducer } from 'redux-persist';
+import { configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 import { combineReducers } from 'redux';
-import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import exampleReducer from './slices/exampleSlice';
-import authSlice from './slices/authSlice';
-import usersSlice from './slices/usersSlice';
-import faqSlice from './slices/faqSlice';
-import pageSlice from './slices/pageSlice';
-import locationsSlice from './slices/locationsSlice';
-import contactSlice from './slices/contactSlice';
+
 import newsLettersSlice from './slices/newsLettersSlice';
+import locationsSlice from './slices/locationsSlice';
 import dashboardSlice from './slices/dashboardSlice';
+import customersSlice from './slices/customersSlice';
 import mineralsSlice from './slices/mineralsSlice';
+import exampleReducer from './slices/exampleSlice';
+import contactSlice from './slices/contactSlice';
+import usersSlice from './slices/usersSlice';
 import planSlice from './slices/planSlice';
+import pageSlice from './slices/pageSlice';
+import authSlice from './slices/authSlice';
+import faqSlice from './slices/faqSlice';
 
 
 const rootReducer = combineReducers({
@@ -23,11 +25,12 @@ const rootReducer = combineReducers({
   faq: faqSlice,
   page: pageSlice,
   locations: locationsSlice,
-  contacts:contactSlice,
-  newsletters:newsLettersSlice,
-  dashboard:dashboardSlice,
-  minerals:mineralsSlice,
-  plan:planSlice
+  contacts: contactSlice,
+  newsletters: newsLettersSlice,
+  dashboard: dashboardSlice,
+  minerals: mineralsSlice,
+  plan: planSlice,
+  customers: customersSlice
 });
 
 const persistConfig = {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 
-import { addUser, getUsers, removeUser, setUsers } from "../../store/slices/usersSlice";
+import { addUser, getUsers, removeUser, setUsers, } from "../../store/slices/usersSlice";
 import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import { TableBody, TableCell, TableRow } from "../../components/ui/table";
 import AddUserModel from "../../components/UserProfile/AddUserModel";
@@ -16,11 +16,12 @@ import Button from "../../components/ui/button/Button";
 import { Plans } from "../../config/subscriptionPlans";
 import baseApi, { endpoints } from "../../config/api";
 import { useMutation } from "../../hooks/useMutation";
+import { formatToDMY } from "../../utils/DateFormate";
 import { useQuery } from "../../hooks/useQuery";
 import { useModal } from "../../hooks/useModal";
 
 
-const Customers = () => {
+const Users = () => {
   const auth = useSelector(getUser);
   const users = useSelector(getUsers);
   const token = useSelector(getToken);
@@ -45,20 +46,25 @@ const Customers = () => {
     [users]
   );
 
-  const handleDelete= useCallback( async (id:any)=>{
-    try {
-      await baseApi.delete(`${endpoints.deleteUser}?id=${id}`,{headers:{Authorization:token}}); 
-      dispatch(removeUser(id));
-    } catch (error) {
-      toast.error(GetApiErrorMessage(error));
-    }
-  },[users, dispatch]);
+  const handleDelete = useCallback(
+    async (id: any) => {
+      try {
+        await baseApi.delete(`${endpoints.deleteUser}?id=${id}`, {
+          headers: { Authorization: token },
+        });
+        dispatch(removeUser(id));
+      } catch (error) {
+        toast.error(GetApiErrorMessage(error));
+      }
+    },
+    [users, dispatch]
+  );
 
   return (
     <>
       <PageMeta title={"Users | Petro411"} description="" />
       <Header isLoading={loading} onReload={request} />
-      <BasicTableOne head={["User", "Role", "Subscription", ""]}>
+      <BasicTableOne head={["User", "Email", "Role", "Created at"]}>
         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
           {users.map((user) => (
             <TableRow key={user?._id} className="group">
@@ -85,25 +91,29 @@ const Customers = () => {
                     <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
                       {user?.name}
                     </span>
-                    <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                      {user?.email}
-                    </span>
                   </div>
                 </Link>
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {user?.email}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {user?.role[0]?.toUpperCase()}
                 {user?.role?.slice(1)}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {user?.subscription?.amount ?"$":"-"}{user?.subscription?.amount?  (user?.subscription?.amount / 100).toFixed(2) : ""}
+                {formatToDMY(user?.createdAt)}
               </TableCell>
-              <TableCell className="text-end px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                {
-                  auth?._id !== user?._id &&
-                  <TrashIcon className="opacity-0 group-hover:opacity-100 transition-all cursor-pointer" onClick={()=>handleDelete(user?._id)} height={18} width={18} />
-                }
-              </TableCell>
+              {/* <TableCell className="text-end px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                {auth?._id !== user?._id && (
+                  <TrashIcon
+                    className="opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                    onClick={() => handleDelete(user?._id)}
+                    height={18}
+                    width={18}
+                  />
+                )}
+              </TableCell> */}
             </TableRow>
           ))}
         </TableBody>
@@ -201,7 +211,7 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
         </ol>
       </div>
       <AddUserModel
-      user={null}
+        user={null}
         isOpen={isOpen}
         closeModal={closeModal}
         onSubmit={handleSave}
@@ -215,4 +225,4 @@ const Header = ({ isLoading, onReload }: HeaderProps) => {
   );
 };
 
-export default Customers;
+export default Users;

@@ -1,26 +1,13 @@
+import { MapPinIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
-import {
-  BoltIcon,
-  BoxCubeIcon,
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  GroupIcon,
-  HorizontaLDots,
-  ListIcon,
-  MailIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
-} from "../icons";
+import { BoltIcon, BoxCubeIcon, CalenderIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, ListIcon, MailIcon, PageIcon, PieChartIcon, PlugInIcon, TableIcon, UserCircleIcon, } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import Logo from "../components/brand/Logo";
-import { MapPinIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
+
+
 // import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
@@ -51,6 +38,11 @@ const navItems: NavItem[] = [
     icon: <GroupIcon />,
     name: "Users",
     path: "/users",
+  },
+  {
+    icon: <GroupIcon />,
+    name: "Customers",
+    path: "/customers",
   },
   {
     icon: <RectangleGroupIcon />,

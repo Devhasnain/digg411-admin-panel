@@ -18,8 +18,9 @@ import AppLayout from "./layout/AppLayout";
 import Locations from "./pages/Locations";
 import Home from "./pages/Dashboard/Home";
 import Faqs from "./pages/OtherPage/Faqs";
-import Customers from "./pages/Users";
+import Customers from "./pages/Customers";
 import Contact from "./pages/Contact";
+import Users from "./pages/Users";
 import Plans from "./pages/Plans";
 import Blank from "./pages/Blank";
 
@@ -34,7 +35,8 @@ export default function App() {
             <Route index path="/" element={<Home />} />
 
             <Route path="/profile" element={<UserProfiles />} />
-            <Route path="/users" element={<Customers />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/customers" element={<Customers />} />
             <Route path="/user/:id" element={<UserDetails />} />
             <Route path="/faqs" element={<Faqs />} />
             <Route path="/terms" element={<TermsAndConditions />} />
