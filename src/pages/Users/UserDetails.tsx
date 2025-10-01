@@ -1,18 +1,22 @@
-import PageMeta from "../../components/common/PageMeta";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import { useParams } from "react-router";
-import { useQuery } from "../../hooks/useQuery";
-import { endpoints } from "../../config/api";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useState, } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getToken } from "../../store/slices/authSlice";
-import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import toast from "react-hot-toast";
+
 import UserMetaCard from "../../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../../components/UserProfile/UserInfoCard";
-import { useModal } from "../../hooks/useModal";
-import toast from "react-hot-toast";
+import PageBreadcrumb from "../../components/common/PageBreadCrumb";
+import ComponentCard from "../../components/common/ComponentCard";
 import GetApiErrorMessage from "../../utils/GetApiErrorMessage";
-import { useMutation } from "../../hooks/useMutation";
 import { useMutationPut } from "../../hooks/useMutationPut";
+import PageMeta from "../../components/common/PageMeta";
+import { getToken } from "../../store/slices/authSlice";
+import { useMutation } from "../../hooks/useMutation";
+import { formatToDMY } from "../../utils/DateFormate";
+import { useQuery } from "../../hooks/useQuery";
+import { useModal } from "../../hooks/useModal";
+import { endpoints } from "../../config/api";
+
 
 let initialValues = {
   name: "",
@@ -38,6 +42,10 @@ export default function UserDetails() {
 
   const [haveChanges, setHaveChanges] = useState(false);
 
+  const subscription = useMemo(() => {
+    return user?.subscription;
+  }, [user?.subscription]);
+
   const handleOnChange = useCallback(
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -58,16 +66,19 @@ export default function UserDetails() {
     [form]
   );
 
-  const handleSave = useCallback(async (e:FormEvent) => {
-    try {
-      e.preventDefault()
-      await updateApi.request({ ...form, id: user?._id }, null, token??"");
-      // dispatch(updateU )
-      toast.success("User Profile Updated.");
-    } catch (error) {
-      toast.error(GetApiErrorMessage(error));
-    }
-  }, [form, data]);
+  const handleSave = useCallback(
+    async (e: FormEvent) => {
+      try {
+        e.preventDefault();
+        await updateApi.request({ ...form, id: user?._id }, null, token ?? "");
+        // dispatch(updateU )
+        toast.success("User Profile Updated.");
+      } catch (error) {
+        toast.error(GetApiErrorMessage(error));
+      }
+    },
+    [form, data]
+  );
 
   useEffect(() => {
     if (data?.user) {
@@ -101,6 +112,80 @@ export default function UserDetails() {
             loading={loading || updateApi.loading}
           />
           <UserInfoCard user={user} />
+          {subscription && (
+            <ComponentCard title="Subscription">
+              <>
+              <div className="grid grid-cols-2 gap-y-5">
+                <div>
+                  <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Started at
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    {formatToDMY(subscription?.start_date)}
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Ends at
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    {formatToDMY(subscription?.expires_at)}
+                  </p>
+                </div>
+                {subscription?.canceled_at && (
+                  <div>
+                    <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                      Cancelled at
+                    </p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                      {formatToDMY(subscription?.canceled_at)}
+                    </p>
+                  </div>
+                )}
+                 <div>
+                  <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Monthly downloads limit
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    {subscription?.monthlyDownloadLimit}
+                  </p>
+                </div>
+                 <div>
+                  <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Downloads this month
+                  </p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    {subscription?.monthlyDownloadLimit}
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                    Amount
+                  </p>
+                  <h2 className="text-2xl">
+                    {(subscription?.amount / 100).toFixed(2)}$
+                  </h2>
+                </div>
+              </div>
+
+              {subscription?.downloads_list?.length ? <div className="space-y-4">
+                <h3 className="text-xl border-b pb-2">Downloads history</h3>
+                
+                <div className="space-y-2">
+                  {
+                    subscription?.downloads_list?.map((item:any,index:number)=>(
+                      <div key={index} className="border rounded-lg px-4 py-2 flex flex-row items-center justify-between">
+                        <span>{item?.county}</span>
+                        <span>{item?.items_count}</span>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div> : <></>}
+              </>
+
+            </ComponentCard>
+          )}
         </div>
       </div>
     </>

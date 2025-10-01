@@ -1,15 +1,17 @@
-import PageBreadcrumb from "../components/common/PageBreadCrumb";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
+import { getToken, getUser, updateUser } from "../store/slices/authSlice";
 import UserMetaCard from "../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../components/UserProfile/UserInfoCard";
-import PageMeta from "../components/common/PageMeta";
-import { useDispatch, useSelector } from "react-redux";
-import { getToken, getUser, updateUser } from "../store/slices/authSlice";
-import { useModal } from "../hooks/useModal";
-import { useMutation } from "../hooks/useMutation";
-import { endpoints } from "../config/api";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import GetApiErrorMessage from "../utils/GetApiErrorMessage";
+import PageMeta from "../components/common/PageMeta";
+import { useMutation } from "../hooks/useMutation";
+import { useModal } from "../hooks/useModal";
+import { endpoints } from "../config/api";
+
 
 const initialValues = {
   name: "",

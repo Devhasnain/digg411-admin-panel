@@ -70,7 +70,7 @@ export default function MineralList() {
           </li>
         </ol>
       </div>
-      <Tile className="lg:!p-0 w-full">
+       <div className="rounded-2xl min-w-[800px] max-w-[1000px] overflow-x-auto border border-gray-200 bg-white p-5">
         <DataTable
           value={mineralsList}
           paginator
@@ -215,7 +215,7 @@ export default function MineralList() {
           />
         </DataTable>
         {/* </di/v> */}
-      </Tile>
+      </div>
     </>
   );
 }

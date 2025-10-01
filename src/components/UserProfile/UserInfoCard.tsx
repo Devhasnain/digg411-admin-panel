@@ -29,7 +29,9 @@ export default function UserInfoCard({user}:Props) {
               </p>
             </div>
 
-            <div>
+           {user?.phone &&
+           <>
+           <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Phone
               </p>
@@ -38,15 +40,18 @@ export default function UserInfoCard({user}:Props) {
               </p>
             </div>
             <div/>
+           </>
+            
+            }
 
-            <div>
+            {user?.bio &&<div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Bio
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
                 {user?.bio ?? "-"}
               </p>
-            </div>
+            </div>}
           </div>
         </div>
       </div>
