@@ -2,13 +2,10 @@ import { MapPinIcon, RectangleGroupIcon } from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
-// Assume these icons are imported from an icon library
-import { BoltIcon, BoxCubeIcon, CalenderIcon, ChevronDownIcon, GridIcon, GroupIcon, HorizontaLDots, ListIcon, MailIcon, PageIcon, PieChartIcon, PlugInIcon, TableIcon, UserCircleIcon, } from "../icons";
+import { BoltIcon, BoxCubeIcon, ChevronDownIcon, GridIcon, GroupIcon, MailIcon, PageIcon, PieChartIcon, PlugInIcon, TableIcon, UserCircleIcon, } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import Logo from "../components/brand/Logo";
 
-
-// import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
   name: string;
@@ -21,14 +18,8 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
     path: "/",
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
   {
     icon: <UserCircleIcon />,
     name: "Profile",
@@ -47,8 +38,10 @@ const navItems: NavItem[] = [
   {
     icon: <RectangleGroupIcon />,
     name: "Mineral",
-    // path: "/mineral",
-    subItems: [{ name: "Add New", path: "/add-mineral" },{ name: "List", path: "/mineral" }],
+    subItems: [
+      { name: "Add New", path: "/add-mineral" },
+      { name: "List", path: "/mineral" },
+    ],
   },
   {
     icon: <MapPinIcon />,
@@ -56,20 +49,10 @@ const navItems: NavItem[] = [
     path: "/locations",
   },
   {
-    icon: <BoltIcon/>,
+    icon: <BoltIcon />,
     name: "Plans",
     path: "/plans",
   },
-  // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
   {
     name: "Pages",
     icon: <PageIcon />,
@@ -77,8 +60,6 @@ const navItems: NavItem[] = [
       { name: "Faqs", path: "/faqs" },
       { name: "Terms & Conditions", path: "/terms" },
       { name: "Privacy Policy", path: "/privacy-policy" },
-      // { name: "Blank Page", path: "/blank" },
-      // { name: "404 Error", path: "/error-404" },
     ],
   },
   {
@@ -86,7 +67,7 @@ const navItems: NavItem[] = [
     name: "Contact",
     path: "/contact",
   },
-   {
+  {
     icon: <MailIcon />,
     name: "News Letters",
     path: "/newsletters",
@@ -336,56 +317,15 @@ const AppSidebar: React.FC = () => {
         }`}
       >
         <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <Logo />
-          ) : (
-            <img
-              src="/images/logo/logo.png"
-              alt="Logo"
-              width={40}
-              height={40}
-            />
-          )}
+          <Logo condition={isExpanded || isHovered || isMobileOpen} />
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">
-            <div>
-              {/* <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2> */}
-              {renderMenuItems(navItems, "main")}
-            </div>
-            {/* <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
-            </div> */}
+            <div>{renderMenuItems(navItems, "main")}</div>
           </div>
         </nav>
-        {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
   );
