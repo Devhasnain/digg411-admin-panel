@@ -1,12 +1,12 @@
 import { ArrowPathIcon, EyeIcon, MagnifyingGlassIcon, PencilSquareIcon, } from "@heroicons/react/24/outline";
-import { ChangeEvent, memo, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { MultiSelect } from "primereact/multiselect";
 import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { Column } from "primereact/column";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
 
 import { Button, IconButton, Label, Modal, PageMeta } from "../../components";
 import { removeMineral } from "../../store/slices/mineralsSlice";
@@ -16,6 +16,7 @@ import Input from "../../components/form/input/InputField";
 import { getToken } from "../../store/slices/authSlice";
 import baseApi, { endpoints } from "../../config/api";
 import { useModal } from "../../hooks/useModal";
+import { navItems } from "../../layout/Routes";
 import SelectLocation from "./SelectLocation";
 import { TrashBinIcon } from "../../icons";
 
@@ -28,6 +29,11 @@ export default function MineralList() {
   const token = useSelector(getToken);
   const [loading, setLoading] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const pathname = useLocation()?.pathname;
+  const pageTitle = useMemo(() => {
+    if(pathname?.includes("/mineral")) return navItems.find((item) => item.id === "mineral")?.name || "Mineral Owners";
+    return "";
+  }, [pathname]);
 
   const toggleSearch = () => setShowSearch((pre) => !pre);
 
@@ -74,7 +80,7 @@ export default function MineralList() {
           className="text-xl font-semibold text-gray-800 dark:text-white/90"
           x-text="pageName"
         >
-          Mineral list
+         {pageTitle}
         </h2>
         <ol className="flex items-center gap-2">
           <li>
