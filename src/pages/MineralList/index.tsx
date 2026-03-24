@@ -1,8 +1,8 @@
 import { ArrowPathIcon, EyeIcon, MagnifyingGlassIcon, PencilSquareIcon, } from "@heroicons/react/24/outline";
 import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { MultiSelect } from "primereact/multiselect";
+import { Link, useLocation } from "react-router";
 import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { Column } from "primereact/column";
@@ -143,7 +143,7 @@ export default function MineralList() {
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal line-clamp-2">
-                {rowData?.names[0] ?? "-"}
+                {rowData?.names?.length ? rowData?.names[0] ?? "-" : "-"}
               </span>
             )}
             style={{ minWidth: "12rem" }}
@@ -158,7 +158,7 @@ export default function MineralList() {
             body={(rowData) => (
               <>
                 <span className="text-gray-500 text-sm font-normal">
-                  {rowData?.emails[0] ?? "-"}
+                  {rowData?.emails?.length ? rowData?.emails[0] ?? "-" : "-"}
                 </span>
               </>
             )}
@@ -172,7 +172,7 @@ export default function MineralList() {
             }
             body={(rowData) => (
               <span className="text-gray-500 text-sm font-normal">
-                {rowData?.numbers[0] ?? "-"}
+                {rowData?.numbers?.length ? rowData?.numbers[0] ?? "-" : "-"}
               </span>
             )}
             style={{ minWidth: "14rem" }}
@@ -203,9 +203,8 @@ export default function MineralList() {
               <Dropdown
                 value={rowData?.counties?.length ? rowData?.counties[0] : ""}
                 options={rowData?.counties}
-                className="w-[10rem] !text-sm"
+                className="w-40 text-sm!"
                 pt={{
-                  // root: { className: "h-8 text-sm" },
                   input: { className: "text-sm py-1" },
                 }}
               />
