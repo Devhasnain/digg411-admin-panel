@@ -220,7 +220,7 @@ export default function MineralList() {
             field="addresses"
             filter={false}
             header={
-              <span className="text-gray-500 text-sm font-normal !line-clamp-2">
+              <span className="text-gray-500 text-sm font-normal line-clamp-2!">
                 Address
               </span>
             }
