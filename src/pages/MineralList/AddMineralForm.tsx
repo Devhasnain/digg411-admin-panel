@@ -181,16 +181,7 @@ const AddMineralForm = () => {
         <span className="font-medium text-lg">Mineral Owner Location</span>
         <div className="space-y-5">
           <div className="grid grid-cols-2 gap-5">
-            <div className="">
-              <Label htmlFor="zipcode">Zip code</Label>
-              <Input
-                placeholder="Zip code"
-                type="number"
-                name="zipcode"
-                value={formInputs.zipcode}
-                onChange={handleOnChange}
-              />
-            </div>
+            
             <div className="">
               <Label htmlFor="city">City</Label>
               <Input
@@ -201,9 +192,28 @@ const AddMineralForm = () => {
                 onChange={handleOnChange}
               />
             </div>
+            <div className="">
+              <Label htmlFor="zipcode">Zip code</Label>
+              <Input
+                placeholder="Zip code"
+                type="number"
+                name="zipcode"
+                value={formInputs.zipcode}
+                onChange={handleOnChange}
+              />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-5">
-            <TodoInput
+           
+
+            <SelectLocation
+              name="ownerState"
+              label="Onwer state"
+              placeholder="Onwer state"
+              value={formInputs.ownerState}
+              onChange={handleOnChange}
+            />
+             <TodoInput
               label="Address"
               placeholder="Address"
               fieldName="addresses"
@@ -215,14 +225,6 @@ const AddMineralForm = () => {
               addItem={handleOnChangeArray}
               resetInput={handleResetInput}
               removeItem={handleArrayRemoveItem}
-            />
-
-            <SelectLocation
-              name="ownerState"
-              label="Onwer state"
-              placeholder="Onwer state"
-              value={formInputs.ownerState}
-              onChange={handleOnChange}
             />
           </div>
         </div>
