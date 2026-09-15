@@ -1,15 +1,15 @@
 import { memo, useState } from "react";
-import PageMeta from "../../components/common/PageMeta";
+
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import Tile from "../../components/common/Tile";
 import AddMineralForm from "./AddMineralForm";
-import UploadMineralFile from "./UploadMineralFile";
+import FileDropZone from "./FileDropZone";
+
 
 const AddMineral = () => {
     const [activeTab,setActiveTab] = useState("manual")
   return (
     <>
-      <PageMeta title="Add Mineral |" description="" />
       <PageBreadcrumb pageTitle="Add Mineral" />
       <Tile>
         <div className="flex flex-row items-center">
@@ -22,7 +22,7 @@ const AddMineral = () => {
             activeTab === "manual" && <AddMineralForm/>
         }
         {
-            activeTab === "upload" && <UploadMineralFile/>
+            activeTab === "upload" && <FileDropZone/>
         }
         </div>
 
