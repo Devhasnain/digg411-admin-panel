@@ -1,30 +1,15 @@
+import { ChangeEvent, useCallback, useState } from "react";
+import { MultiSelect } from "primereact/multiselect";
+import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
-import { z } from "zod";
 
-
-export const mineralSchema = z.object({
-  name: z.string().min(1),
-  emails: z.array(z.string().email()).nonempty(),
-  numbers: z.array(z.string().min(1)).nonempty(),
-  addresses: z.array(z.string().min(1)).nonempty(),
-  counties: z.array(z.string().min(1)).nonempty(),
-  zipcode: z.string().min(1),
-  description: z.string().optional(),
-  city: z.string().min(1),
-  state: z.object({
-    name: z.string().min(1),
-    code: z.string().min(1),
-  }),
-});
-import { ChangeEvent, useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import SelectLocation from "./SelectLocation";
-import { MultiSelect } from "primereact/multiselect";
-import { Button, Label } from "../../components";
 import { useAddMineralsBulk } from "../../hooks";
+import { Button, Label } from "../../components";
 import { useLocationStore } from "../../store";
+import SelectLocation from "./SelectLocation";
+
 
 const FileDropZone = () => {
   const location = useLocationStore((state) => state.locations);
@@ -130,6 +115,7 @@ const FileDropZone = () => {
     },
     [form]
   );
+
 
   return (
     <div>

@@ -1,7 +1,6 @@
 import { ArrowPathIcon, MagnifyingGlassIcon, } from "@heroicons/react/24/outline";
-import { ChangeEvent, memo, useMemo, useState } from "react";
+import { ChangeEvent, memo, useCallback, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { MultiSelect } from "primereact/multiselect";
 import toast from "react-hot-toast";
 
 import { Button, IconButton, Label, InputField as Input, AgGridTable, DeleteConfirmation, } from "../../components";
@@ -22,7 +21,7 @@ export default function MineralList() {
   const [form, setForm] = useState({
     name: "",
     state: { label: "", value: "" },
-    counties: [],
+    county: "",
   });
   const [showSearch, setShowSearch] = useState(false);
   const pathname = useLocation()?.pathname;
@@ -42,7 +41,7 @@ export default function MineralList() {
     rows: 10,
     name: form.name,
     stateCode: form.state.value,
-    counties: form.counties?.join(",") || "",
+    county: form.county || "",
   });
   const { mutate: deleteMineral, isPending: isDeleting } = useDeleteMineral();
 
@@ -160,16 +159,31 @@ const SearchForm = memo(
       setForm((pre: any) => ({ ...pre, [e.target.name]: e.target.value }));
     };
 
-    const handleArrayChange = (e: { name: string; value: any }) => {
-      setForm((pre: any) => ({ ...pre, [e.name]: e.value }));
-    };
+    const filteredCounties = useMemo(
+      () =>
+        location?.filter(
+          (item: any) =>
+            item?.type === "county" && item?.state?.code === form.state.value
+        ) || [],
+      [form]
+    );
+
+    const handleCountyToggle = useCallback(
+      (countyName: string) => {
+        setForm((pre: any) => ({
+          ...pre,
+          county: pre.county === countyName ? "" : countyName,
+        }));
+      },
+      [form]
+    );
 
     const onClearSearch = () => {
       if (loading) return;
       setForm({
         name: "",
         state: { label: "", value: "" },
-        counties: [],
+        county: "",
       });
     };
 
@@ -183,28 +197,29 @@ const SearchForm = memo(
             value={form.state}
             onChange={handleOnChange}
           />
-          <div className="">
+          {form.state?.value && <div className="">
             <Label htmlFor="counties">Counties</Label>
-            <MultiSelect
-              placeholder="Select Counties"
-              options={location?.filter(
-                (item) =>
-                  item?.type === "county" &&
-                  item?.state?.name === form.state.label
-              )}
-              optionLabel="name"
-              optionValue="name"
-              filter={true}
-              value={form.counties}
-              onChange={(e) =>
-                handleArrayChange({
-                  name: "counties",
-                  value: e.target.value,
-                })
-              }
-              className="w-full rounded-lg!"
-            />
-          </div>
+            <div className="flex flex-row items-center flex-wrap gap-2">
+              {filteredCounties.map((item: any) => {
+                const isSelected = form.county === item.name;
+                return (
+                  <span
+                    onClick={() => handleCountyToggle(item.name)}
+                    className={`cursor-pointer rounded-xl px-4 py-2 border transition-colors ${
+                      isSelected
+                        ? "bg-blue-500 text-white border-blue-500"
+                        : "text-gray-500 border-gray-300 hover:border-blue-500"
+                    }`}
+                    key={item?.code || item?.name}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {item.name}
+                  </span>
+                );
+              })}
+            </div>
+          </div>}
         </div>
         <div className="grid grid-cols-2 gap-5">
           <div className="">

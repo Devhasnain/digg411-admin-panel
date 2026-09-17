@@ -24,7 +24,7 @@ baseApi.interceptors.request.use(
     const token = localStorage.getItem('token');
 
     if (token) {
-      config.headers.Authorization =JSON.parse(token);
+      config.headers.Authorization = JSON.parse(token);
     }
 
     return config
@@ -69,6 +69,7 @@ export const endpoints = {
   getPaginatedMinerals: "/admin/mineral/list",
   deleteMineral: "/admin/mineral/delete",
   editMineral: "/admin/mineral/edit",
+  updateMineralBulk: "/admin/mineral/update-bulk",
   getPlans: "/admin/plan",
   createPlan: "/admin/plan/create",
   deletePlan: "/admin/plan/delete",
@@ -80,30 +81,34 @@ export const QUERY_KEYS = {
   AUTH_LOOKUP: ["AUTH_LOOKUP"],
 
   // DASHBOARD
-  DASHBOARD_ANALYTICS:['Dashboard-analytics'],
+  DASHBOARD_ANALYTICS: ['Dashboard-analytics'],
 
-  ADMIN_USERS:['ADMIN_USERS'],
-  CUSTOMERS:['CUSTOMER_USERS'],
-  CUSTOMER_USERS:(page:number)=>['CUSTOMER_USERS',page],
+  ADMIN_USERS: ['ADMIN_USERS'],
+  CUSTOMERS: ['CUSTOMER_USERS'],
+  CUSTOMER_USERS: (page: number) => ['CUSTOMER_USERS', page],
   CUSTOMER_DETAIL: (id: string) => ['CUSTOMER', id],
 
-  MINERALS:['MINERALS_LIST'],
-  MINERAL_LIST:(page:number)=>['MINERALS_LIST',page],
-  MINERAL_DETAIL:(id:string)=>['MINERAL',id],
+  MINERALS: ['MINERALS_LIST'],
+  MINERAL_LIST: (page: number, params: {
+    name: string,
+    stateCode: string,
+    county: string
+  }) => ['MINERALS_LIST', page, params],
+  MINERAL_DETAIL: (id: string) => ['MINERAL', id],
 
-  LOCATIONS:['LOCATIONS_LIST'],
-  LOCATIONS_LIST:(page:number)=>['LOCATIONS_LIST',page],
-  LOCATIONS_FULL_LIST:['LOCATIONS_FULL_LIST'],
-  LOCATION_DETAIL:(id:string)=>['LOCATION',id],
+  LOCATIONS: ['LOCATIONS_LIST'],
+  LOCATIONS_LIST: (page: number) => ['LOCATIONS_LIST', page],
+  LOCATIONS_FULL_LIST: ['LOCATIONS_FULL_LIST'],
+  LOCATION_DETAIL: (id: string) => ['LOCATION', id],
 
-  CONTACTS:['CONTACTS'],
-  CONTACTS_LIST:(page:number)=>['CONTACTS',page],
+  CONTACTS: ['CONTACTS'],
+  CONTACTS_LIST: (page: number) => ['CONTACTS', page],
 
-  NEWSLETTERS:['NEWSLETTERS'],
-  PLANS_LIST:['PLANS_LIST'],
+  NEWSLETTERS: ['NEWSLETTERS'],
+  PLANS_LIST: ['PLANS_LIST'],
 
-  FAQS_LIST:['FAQS_LIST'],
-  PAGE:(slug:string)=>['PAGE',slug],
+  FAQS_LIST: ['FAQS_LIST'],
+  PAGE: (slug: string) => ['PAGE', slug],
 
 
 }
