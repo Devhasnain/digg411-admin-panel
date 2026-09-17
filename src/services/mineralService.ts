@@ -7,15 +7,15 @@ export const mineralService = {
         rows,
         name,
         stateCode,
-        counties
+        county
     }:{
         page:number,
         rows:number,
         name:string,
         stateCode:string,
-        counties:string
+        county:string
     })=>{
-        const res = await baseApi.get(`${endpoints.getPaginatedMinerals}?page=${page}&limit=${rows}&name=${name}&stateCode=${stateCode}&counties=${counties}`)
+        const res = await baseApi.get(`${endpoints.getPaginatedMinerals}?page=${page}&limit=${rows}&name=${name}&stateCode=${stateCode}&county=${county}`)
         return res.data
     },
 
@@ -25,6 +25,10 @@ export const mineralService = {
     },
     updateMineral:async(data:any)=>{
         const res = await baseApi.put(`${endpoints.editMineral}?id=${data.id}`, data.payload)
+        return res.data
+    },
+    updateMineralBulk:async(skip:number, limit:number)=>{
+        const res = await baseApi.put(`${endpoints.updateMineralBulk}?skip=${skip}&limi=${limit}`)
         return res.data
     },
     deleteMineral:async(id:string)=>{

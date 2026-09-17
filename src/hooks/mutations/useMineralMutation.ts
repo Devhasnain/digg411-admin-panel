@@ -15,6 +15,14 @@ export const useUpdateMineral = () => {
     })
 }
 
+
+export const useUpdateMineralBulk = () => {
+    return useMutation({
+        mutationFn: (data: any) => mineralService.updateMineralBulk(data.skip, data.limit),
+    })
+}
+
+
 export const useDeleteMineral = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -35,7 +43,7 @@ export const useAddMineralsBulk = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (payload: any) => mineralService.uploadBulkMineral(payload),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MINERAL_LIST(1) })
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.MINERALS })
     })
 }
 
