@@ -86,7 +86,7 @@ const DownloadMineral = () => {
 
   return (
     <div className="min-h-[80vh]">
-      <PageBreadCrumb pageTitle="Download Mineral" />
+      <PageBreadCrumb pageTitle="Download Records" />
       <Tile>
         <form onSubmit={handleDownload}>
           <div className="grid grid-cols-2 gap-5">
